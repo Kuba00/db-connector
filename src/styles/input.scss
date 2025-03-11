@@ -1,0 +1,56 @@
+.connection-form {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.custom-input {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+
+  input {
+    font-size: 15px;
+    width: 100%;
+    padding: 0.675em 1em;
+    border: 1px solid #caced1;
+    border-radius: 0.25rem;
+    background-color: white;
+    outline: none;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      border-color: #666;
+    }
+
+    &::placeholder {
+      color: #666;
+    }
+
+    &[aria-invalid="true"] {
+      border-color: #dc3545;
+    }
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+    display: none;
+
+    &.visible {
+      display: block;
+    }
+  }
+
+  .input-icon {
+    position: absolute;
+    right: 1em;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    display: flex;
+    align-items: center;
+  }
+}

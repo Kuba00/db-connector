@@ -1,0 +1,99 @@
+.collapse {
+    margin-bottom: 1em;
+    
+    .handle {
+        margin: 0;
+        font-size: 16px;
+
+        button {
+            width: 100%;
+            color: #fff;
+            cursor: pointer;
+            font-weight: normal;
+            padding: 10px;
+            background: #b0100c;
+            user-select: none;
+            border: none;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            
+            &:hover,
+            &:focus {
+                background: #252525;
+                outline: 2px solid #fff;
+                outline-offset: -2px;
+            }
+
+            &:before {
+                font-family: FontAwesome;
+                content: "\f107";
+                display: inline-block;
+                margin-right: 10px;
+                font-size: 1em;
+                line-height: 1.556em;
+                vertical-align: middle;
+                transition: transform 0.5s;
+            }
+
+            &.expanded:before {
+                transform: rotate(180deg);
+            }
+        }
+    }
+
+    .content {
+        max-width: 620px;
+        margin: 0 auto;
+        background: #fff;
+        overflow: hidden;
+        height: 0;
+        opacity: 0;
+        transition: height 0.5s ease, opacity 0.5s ease;
+        box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
+
+        &.expanded {
+            opacity: 1;
+        }
+
+        .content-inner {
+            padding: 10px;
+        }
+
+        /* Ensure focus outline is visible when tabbing through content */
+        a:focus, button:focus, input:focus, select:focus, textarea:focus {
+            outline: 2px solid #06c;
+            outline-offset: 2px;
+        }
+    }
+}
+
+/* Base styles */
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+body {
+    background: #ccc;
+    padding: 10px;
+}
+
+p {
+    margin: 0 0 1em;
+    padding: 10px;
+}
+
+h1 {
+    margin: 0 0 1.5em;
+    font-weight: 600;
+    font-size: 1.5em;
+}
+
+.collapse p:last-child {
+    margin-bottom: 0;
+}
+
+.container {
+    max-width: 620px;
+    margin: 0 auto;
+}

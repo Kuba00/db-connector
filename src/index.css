@@ -1,0 +1,6 @@
+/* Import Tailwind */
+@import "tailwindcss";
+
+@theme {
+  --color-gray-300: #9ca3af;
+}

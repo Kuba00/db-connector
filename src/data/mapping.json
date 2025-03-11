@@ -1,0 +1,68 @@
+{
+  "tables": [
+    {
+      "table_name": "Clients",
+      "mapping_status": "partial_success",
+      "mapping_summary": {
+        "total_fields": 10,
+        "mapped_fields": 8,
+        "unmapped_fields": 2,
+        "confidence_score": 0.85
+      },
+      "header_mapping": [
+        {
+          "source_field": "client_name",
+          "target_field": "customer_name",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "phone",
+          "target_field": "contact_number",
+          "confidence": 0.90
+        }
+      ],
+      "unmapped_fields": [
+        {
+          "source_field": "dob",
+          "error_type": "format_mismatch",
+          "expected_format": "YYYY-MM-DD",
+          "suggested_fix": "Formula: convert date to YYYY-MM-DD",
+          "manual_fix_required": true
+        },
+        {
+          "source_field": "email",
+          "error_type": "missing_value",
+          "suggested_fix": "Select a corresponding field",
+          "manual_fix_required": false
+        }
+      ],
+      "validation_status": "needs_review",
+      "message": "Some headers were not mapped correctly. Review unmapped fields."
+    },
+    {
+      "table_name": "Orders",
+      "mapping_status": "success",
+      "mapping_summary": {
+        "total_fields": 5,
+        "mapped_fields": 5,
+        "unmapped_fields": 0,
+        "confidence_score": 0.98
+      },
+      "header_mapping": [
+        {
+          "source_field": "order_id",
+          "target_field": "transaction_id",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "order_date",
+          "target_field": "purchase_date",
+          "confidence": 0.97
+        }
+      ],
+      "unmapped_fields": [],
+      "validation_status": "validated",
+      "message": "All fields successfully mapped."
+    }
+  ]
+}

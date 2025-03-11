@@ -9,98 +9,17 @@
   <link rel="stylesheet" href="./src/index.css" />
   <script type="module" src="./src/index.ts"></script>
 </head>
+<main role="main" id="content">
+  <section id="mapping-visualization" class="mt-8">
+    <h2>Database Mapping</h2>
+    <p>Review and configure the mapping between source and target fields.</p>
 
-<body class="h-full">
-  <ul class="lar" aria-label="Quick access links">
-    <li><a href="#header">Header</a></li>
-    <li><a href="#content">Main content</a></li>
-  </ul>
-
-  <header role="banner" id="header">
-    <h1>DB Connector</h1>
-    <db-connector>
-      <file-upload></file-upload>
-    </db-connector>
-  </header>
-  <main role="main" id="content">
-    <section id="database-config">
-      <h2>Database Configuration</h2>
-      <db-select id="my-select" placeholder="Select a database type" options='[
-          {
-            "value": "mysql",
-            "label": "MySQL",
-            "icon": "bx bxl-mysql"
-          },
-          {
-            "value": "postgresql",
-            "label": "PostgreSQL",
-            "icon": "bx bxl-postgresql"
-          },
-          {
-            "value": "mongodb",
-            "label": "MongoDB",
-            "icon": "bx bxl-mongodb"
-          },
-          {
-            "value": "redis",
-            "label": "Redis",
-            "icon": "bx bxl-redis"
-          },
-          {
-            "value": "clear",
-            "label": "Clear selection"
-          }
-        ]'></db-select>
-
-      <db-collapse id="section1" title="Connection Parameters" aria-label="Database connection parameters section"
-        ?expanded="true">
-        <p><strong>Configure your database connection:</strong> Set up the connection parameters for your database
-          instance.</p>
-        <p>Specify the host, port, and authentication details to establish a secure connection.</p>
-
-        <div class="connection-form" role="form" aria-label="Database connection form">
-          <db-input name="host" label="Host" placeholder="Enter database host" required icon="bx bx-server"></db-input>
-
-          <db-input name="port" label="Port" type="number" placeholder="Enter port number" required pattern="^\d+$"
-            icon="bx bx-plug"></db-input>
-
-          <db-input name="username" label="Username" placeholder="Enter database username" required
-            icon="bx bx-user"></db-input>
-
-          <db-input name="password" label="Password" type="password" placeholder="Enter database password" required
-            icon="bx bx-lock-alt"></db-input>
-
-          <db-input name="database" label="Database Name" placeholder="Enter database name" required
-            icon="bx bx-data"></db-input>
-          <db-button 
-            type="submit" 
-            variant="primary" 
-            icon="bx bx-check"
-            aria-label="Submit database connection form"
-          >Connect Database</db-button>
-          
-          <db-button 
-            type="button" 
-            variant="danger" 
-            icon="bx bx-x"
-            aria-label="Clear database connection form"
-          >Clear Form</db-button>
-        </div>
-      </db-collapse>
-
-      <db-collapse id="section2" title="Connection Security" aria-label="Security settings section" ?expanded="false">
-        <p><strong>Security Settings:</strong> Configure SSL/TLS settings and other security parameters for your
-          database connection.</p>
-        <p>Ensure your connection is properly secured with the appropriate certificates and encryption settings.</p>
-      </db-collapse>
-
-      <db-collapse id="section3" title="Advanced Options" aria-label="Advanced configuration options section"
-        ?expanded="false">
-        <p><strong>Additional Configuration:</strong> Fine-tune your database connection with advanced settings.</p>
-        <p>Adjust timeout values, connection pooling, and other performance-related parameters.</p>
-      </db-collapse>
-    </section>
-  </main>
+    <!-- Mapping tables will be dynamically generated here -->
+    <div id="mapping-tables-container">
+      <!-- Tables will be inserted here via JavaScript -->
+    </div>
+  </section>
+</main>
 
 </body>
 

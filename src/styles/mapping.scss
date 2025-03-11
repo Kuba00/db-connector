@@ -1,30 +1,30 @@
 .mapping-table-content {
   padding: 1rem;
-  
+
   .mapping-summary {
     margin-bottom: 1.5rem;
     padding: 0.75rem;
     background-color: #f8f9fa;
     border-radius: 0.25rem;
-    
+
     p {
       margin: 0.5rem 0;
     }
   }
-  
+
   h3 {
     font-size: 1.1rem;
     font-weight: 600;
     margin: 1.5rem 0 0.75rem;
   }
-  
+
   .mappings-list,
   .unmapped-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  
+
   .mapping-item,
   .unmapped-item {
     display: grid;
@@ -35,26 +35,26 @@
     border-radius: 0.25rem;
     background-color: #fff;
   }
-  
+
   .mapping-item {
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
-    
+
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
     }
   }
-  
+
   .unmapped-item {
     grid-template-columns: 1fr;
-    
+
     .actions {
       display: flex;
       gap: 0.5rem;
       margin-top: 0.5rem;
     }
   }
-  
+
   .source-field,
   .target-field,
   .confidence,
@@ -62,20 +62,20 @@
   .suggested-fix {
     padding: 0.5rem 0;
   }
-  
+
   .target-field {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    
+
     db-select {
       flex: 1;
     }
   }
-  
+
   .confidence {
     text-align: right;
-    
+
     @media (max-width: 768px) {
       text-align: left;
     }

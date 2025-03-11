@@ -1,52 +1,157 @@
 {
   "tables": [
     {
-      "table_name": "Clients",
+      "table_name": "Customers",
       "mapping_status": "partial_success",
       "mapping_summary": {
-        "total_fields": 10,
-        "mapped_fields": 8,
+        "total_fields": 12,
+        "mapped_fields": 10,
         "unmapped_fields": 2,
-        "confidence_score": 0.85
+        "confidence_score": 0.87
       },
       "header_mapping": [
         {
-          "source_field": "client_name",
-          "target_field": "customer_name",
+          "source_field": "customer_id",
+          "target_field": "client_id",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "first_name",
+          "target_field": "fname",
           "confidence": 0.95
         },
         {
-          "source_field": "phone",
-          "target_field": "contact_number",
-          "confidence": 0.90
+          "source_field": "last_name",
+          "target_field": "lname",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "email",
+          "target_field": "email_address",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "phone_number",
+          "target_field": "contact_phone",
+          "confidence": 0.92
+        },
+        {
+          "source_field": "address_line1",
+          "target_field": "street_address",
+          "confidence": 0.88
+        },
+        {
+          "source_field": "city",
+          "target_field": "city_name",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "state",
+          "target_field": "state_province",
+          "confidence": 0.94
+        },
+        {
+          "source_field": "postal_code",
+          "target_field": "zip_code",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "country",
+          "target_field": "country_name",
+          "confidence": 0.99
         }
       ],
       "unmapped_fields": [
         {
-          "source_field": "dob",
+          "source_field": "date_of_birth",
           "error_type": "format_mismatch",
           "expected_format": "YYYY-MM-DD",
           "suggested_fix": "Formula: convert date to YYYY-MM-DD",
           "manual_fix_required": true
         },
         {
-          "source_field": "email",
-          "error_type": "missing_value",
-          "suggested_fix": "Select a corresponding field",
-          "manual_fix_required": false
+          "source_field": "customer_notes",
+          "error_type": "no_matching_field",
+          "suggested_fix": "Create new field or ignore",
+          "manual_fix_required": true
         }
       ],
       "validation_status": "needs_review",
       "message": "Some headers were not mapped correctly. Review unmapped fields."
     },
     {
+      "table_name": "Products",
+      "mapping_status": "success",
+      "mapping_summary": {
+        "total_fields": 10,
+        "mapped_fields": 10,
+        "unmapped_fields": 0,
+        "confidence_score": 0.96
+      },
+      "header_mapping": [
+        {
+          "source_field": "product_id",
+          "target_field": "item_id",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "product_name",
+          "target_field": "item_name",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "description",
+          "target_field": "item_description",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "category",
+          "target_field": "product_category",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "subcategory",
+          "target_field": "product_subcategory",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "unit_price",
+          "target_field": "price",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "stock_quantity",
+          "target_field": "inventory_count",
+          "confidence": 0.94
+        },
+        {
+          "source_field": "supplier_id",
+          "target_field": "vendor_id",
+          "confidence": 0.92
+        },
+        {
+          "source_field": "weight",
+          "target_field": "product_weight",
+          "confidence": 0.93
+        },
+        {
+          "source_field": "dimensions",
+          "target_field": "product_size",
+          "confidence": 0.90
+        }
+      ],
+      "unmapped_fields": [],
+      "validation_status": "validated",
+      "message": "All fields successfully mapped."
+    },
+    {
       "table_name": "Orders",
       "mapping_status": "success",
       "mapping_summary": {
-        "total_fields": 5,
-        "mapped_fields": 5,
+        "total_fields": 12,
+        "mapped_fields": 12,
         "unmapped_fields": 0,
-        "confidence_score": 0.98
+        "confidence_score": 0.97
       },
       "header_mapping": [
         {
@@ -55,9 +160,599 @@
           "confidence": 0.99
         },
         {
+          "source_field": "customer_id",
+          "target_field": "client_id",
+          "confidence": 0.98
+        },
+        {
           "source_field": "order_date",
           "target_field": "purchase_date",
           "confidence": 0.97
+        },
+        {
+          "source_field": "order_status",
+          "target_field": "status",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "payment_method",
+          "target_field": "payment_type",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "shipping_method",
+          "target_field": "delivery_method",
+          "confidence": 0.94
+        },
+        {
+          "source_field": "subtotal",
+          "target_field": "order_subtotal",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "tax_amount",
+          "target_field": "taxes",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "shipping_cost",
+          "target_field": "delivery_fee",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "total_amount",
+          "target_field": "order_total",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "discount_code",
+          "target_field": "promo_code",
+          "confidence": 0.93
+        },
+        {
+          "source_field": "notes",
+          "target_field": "order_notes",
+          "confidence": 0.92
+        }
+      ],
+      "unmapped_fields": [],
+      "validation_status": "validated",
+      "message": "All fields successfully mapped."
+    },
+    {
+      "table_name": "OrderItems",
+      "mapping_status": "partial_success",
+      "mapping_summary": {
+        "total_fields": 10,
+        "mapped_fields": 9,
+        "unmapped_fields": 1,
+        "confidence_score": 0.91
+      },
+      "header_mapping": [
+        {
+          "source_field": "order_item_id",
+          "target_field": "line_item_id",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "order_id",
+          "target_field": "transaction_id",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "product_id",
+          "target_field": "item_id",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "quantity",
+          "target_field": "item_quantity",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "unit_price",
+          "target_field": "price_per_unit",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "discount_percent",
+          "target_field": "discount_rate",
+          "confidence": 0.94
+        },
+        {
+          "source_field": "line_total",
+          "target_field": "item_subtotal",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "tax_rate",
+          "target_field": "item_tax_rate",
+          "confidence": 0.93
+        },
+        {
+          "source_field": "status",
+          "target_field": "item_status",
+          "confidence": 0.92
+        }
+      ],
+      "unmapped_fields": [
+        {
+          "source_field": "gift_wrap",
+          "error_type": "no_matching_field",
+          "suggested_fix": "Create new field or ignore",
+          "manual_fix_required": true
+        }
+      ],
+      "validation_status": "needs_review",
+      "message": "One field could not be mapped. Review unmapped fields."
+    },
+    {
+      "table_name": "Employees",
+      "mapping_status": "partial_success",
+      "mapping_summary": {
+        "total_fields": 15,
+        "mapped_fields": 13,
+        "unmapped_fields": 2,
+        "confidence_score": 0.89
+      },
+      "header_mapping": [
+        {
+          "source_field": "employee_id",
+          "target_field": "staff_id",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "first_name",
+          "target_field": "fname",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "last_name",
+          "target_field": "lname",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "email",
+          "target_field": "email_address",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "phone",
+          "target_field": "contact_number",
+          "confidence": 0.92
+        },
+        {
+          "source_field": "hire_date",
+          "target_field": "start_date",
+          "confidence": 0.93
+        },
+        {
+          "source_field": "job_title",
+          "target_field": "position",
+          "confidence": 0.94
+        },
+        {
+          "source_field": "department",
+          "target_field": "department_name",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "manager_id",
+          "target_field": "supervisor_id",
+          "confidence": 0.91
+        },
+        {
+          "source_field": "salary",
+          "target_field": "annual_salary",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "address",
+          "target_field": "home_address",
+          "confidence": 0.90
+        },
+        {
+          "source_field": "city",
+          "target_field": "city_name",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "state",
+          "target_field": "state_province",
+          "confidence": 0.94
+        }
+      ],
+      "unmapped_fields": [
+        {
+          "source_field": "emergency_contact",
+          "error_type": "no_matching_field",
+          "suggested_fix": "Create new field or ignore",
+          "manual_fix_required": true
+        },
+        {
+          "source_field": "benefits_plan",
+          "error_type": "no_matching_field",
+          "suggested_fix": "Create new field or ignore",
+          "manual_fix_required": true
+        }
+      ],
+      "validation_status": "needs_review",
+      "message": "Some fields could not be mapped. Review unmapped fields."
+    },
+    {
+      "table_name": "Suppliers",
+      "mapping_status": "success",
+      "mapping_summary": {
+        "total_fields": 12,
+        "mapped_fields": 12,
+        "unmapped_fields": 0,
+        "confidence_score": 0.95
+      },
+      "header_mapping": [
+        {
+          "source_field": "supplier_id",
+          "target_field": "vendor_id",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "company_name",
+          "target_field": "vendor_name",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "contact_name",
+          "target_field": "contact_person",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "contact_title",
+          "target_field": "contact_position",
+          "confidence": 0.94
+        },
+        {
+          "source_field": "email",
+          "target_field": "email_address",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "phone",
+          "target_field": "phone_number",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "address",
+          "target_field": "street_address",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "city",
+          "target_field": "city_name",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "region",
+          "target_field": "state_province",
+          "confidence": 0.93
+        },
+        {
+          "source_field": "postal_code",
+          "target_field": "zip_code",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "country",
+          "target_field": "country_name",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "payment_terms",
+          "target_field": "payment_conditions",
+          "confidence": 0.92
+        }
+      ],
+      "unmapped_fields": [],
+      "validation_status": "validated",
+      "message": "All fields successfully mapped."
+    },
+    {
+      "table_name": "Inventory",
+      "mapping_status": "partial_success",
+      "mapping_summary": {
+        "total_fields": 11,
+        "mapped_fields": 10,
+        "unmapped_fields": 1,
+        "confidence_score": 0.93
+      },
+      "header_mapping": [
+        {
+          "source_field": "inventory_id",
+          "target_field": "stock_id",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "product_id",
+          "target_field": "item_id",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "warehouse_id",
+          "target_field": "location_id",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "quantity_on_hand",
+          "target_field": "current_stock",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "quantity_reserved",
+          "target_field": "allocated_stock",
+          "confidence": 0.92
+        },
+        {
+          "source_field": "quantity_available",
+          "target_field": "available_stock",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "reorder_level",
+          "target_field": "min_stock_level",
+          "confidence": 0.93
+        },
+        {
+          "source_field": "reorder_quantity",
+          "target_field": "restock_amount",
+          "confidence": 0.94
+        },
+        {
+          "source_field": "last_count_date",
+          "target_field": "inventory_date",
+          "confidence": 0.91
+        },
+        {
+          "source_field": "next_count_date",
+          "target_field": "next_inventory_date",
+          "confidence": 0.90
+        }
+      ],
+      "unmapped_fields": [
+        {
+          "source_field": "bin_location",
+          "error_type": "no_matching_field",
+          "suggested_fix": "Create new field or ignore",
+          "manual_fix_required": true
+        }
+      ],
+      "validation_status": "needs_review",
+      "message": "One field could not be mapped. Review unmapped fields."
+    },
+    {
+      "table_name": "Warehouses",
+      "mapping_status": "success",
+      "mapping_summary": {
+        "total_fields": 10,
+        "mapped_fields": 10,
+        "unmapped_fields": 0,
+        "confidence_score": 0.96
+      },
+      "header_mapping": [
+        {
+          "source_field": "warehouse_id",
+          "target_field": "location_id",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "warehouse_name",
+          "target_field": "facility_name",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "manager_id",
+          "target_field": "supervisor_id",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "address",
+          "target_field": "street_address",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "city",
+          "target_field": "city_name",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "state",
+          "target_field": "state_province",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "postal_code",
+          "target_field": "zip_code",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "country",
+          "target_field": "country_name",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "phone",
+          "target_field": "contact_number",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "capacity",
+          "target_field": "storage_capacity",
+          "confidence": 0.93
+        }
+      ],
+      "unmapped_fields": [],
+      "validation_status": "validated",
+      "message": "All fields successfully mapped."
+    },
+    {
+      "table_name": "Transactions",
+      "mapping_status": "partial_success",
+      "mapping_summary": {
+        "total_fields": 14,
+        "mapped_fields": 12,
+        "unmapped_fields": 2,
+        "confidence_score": 0.90
+      },
+      "header_mapping": [
+        {
+          "source_field": "transaction_id",
+          "target_field": "payment_id",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "order_id",
+          "target_field": "order_number",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "customer_id",
+          "target_field": "client_id",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "transaction_date",
+          "target_field": "payment_date",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "transaction_type",
+          "target_field": "payment_type",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "payment_method",
+          "target_field": "payment_method_name",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "amount",
+          "target_field": "payment_amount",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "currency",
+          "target_field": "currency_code",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "status",
+          "target_field": "payment_status",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "authorization_code",
+          "target_field": "auth_code",
+          "confidence": 0.94
+        },
+        {
+          "source_field": "reference_number",
+          "target_field": "reference_id",
+          "confidence": 0.93
+        },
+        {
+          "source_field": "notes",
+          "target_field": "payment_notes",
+          "confidence": 0.91
+        }
+      ],
+      "unmapped_fields": [
+        {
+          "source_field": "gateway_response",
+          "error_type": "no_matching_field",
+          "suggested_fix": "Create new field or ignore",
+          "manual_fix_required": true
+        },
+        {
+          "source_field": "card_last_four",
+          "error_type": "security_concern",
+          "suggested_fix": "Handle with care due to PCI compliance",
+          "manual_fix_required": true
+        }
+      ],
+      "validation_status": "needs_review",
+      "message": "Some fields could not be mapped. Review unmapped fields."
+    },
+    {
+      "table_name": "ShippingDetails",
+      "mapping_status": "success",
+      "mapping_summary": {
+        "total_fields": 13,
+        "mapped_fields": 13,
+        "unmapped_fields": 0,
+        "confidence_score": 0.94
+      },
+      "header_mapping": [
+        {
+          "source_field": "shipping_id",
+          "target_field": "delivery_id",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "order_id",
+          "target_field": "order_number",
+          "confidence": 0.99
+        },
+        {
+          "source_field": "tracking_number",
+          "target_field": "tracking_code",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "carrier",
+          "target_field": "shipping_company",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "shipping_method",
+          "target_field": "delivery_method",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "ship_date",
+          "target_field": "dispatch_date",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "estimated_delivery",
+          "target_field": "expected_arrival",
+          "confidence": 0.94
+        },
+        {
+          "source_field": "actual_delivery",
+          "target_field": "delivery_date",
+          "confidence": 0.96
+        },
+        {
+          "source_field": "shipping_cost",
+          "target_field": "delivery_fee",
+          "confidence": 0.98
+        },
+        {
+          "source_field": "recipient_name",
+          "target_field": "addressee",
+          "confidence": 0.92
+        },
+        {
+          "source_field": "shipping_address",
+          "target_field": "delivery_address",
+          "confidence": 0.95
+        },
+        {
+          "source_field": "shipping_status",
+          "target_field": "delivery_status",
+          "confidence": 0.97
+        },
+        {
+          "source_field": "notes",
+          "target_field": "delivery_notes",
+          "confidence": 0.91
         }
       ],
       "unmapped_fields": [],

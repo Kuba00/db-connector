@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property, state, query } from 'lit/decorators.js';
 import './DbFileInput';
 import './DbProgressBar';
 import './DbMappingVisualizer';
@@ -52,6 +52,8 @@ export class DbMappingUploader extends LitElement {
       font-size: 1.1rem;
       color: #333;
     }
+    
+
     
     .event-log {
       max-height: 200px;
@@ -192,6 +194,18 @@ export class DbMappingUploader extends LitElement {
   @state()
   private isValidated = false;
 
+  /**
+   * Upload progress percentage
+   */
+  @state()
+  private uploadProgress = 0;
+
+  /**
+   * Current file being processed
+   */
+  @state()
+  private currentFile: File | null = null;
+
 
 
   /**
@@ -208,6 +222,9 @@ export class DbMappingUploader extends LitElement {
   firstUpdated() {
     // Add event listeners for mapping events
     this.setupMappingEventListeners();
+    
+    // Add event listeners for file input events
+    this.setupFileInputEventListeners();
   }
 
   /**
@@ -233,6 +250,27 @@ export class DbMappingUploader extends LitElement {
       }, 1500);
     });
   }
+  
+  /**
+   * Setup event listeners for file input events
+   */
+  private setupFileInputEventListeners() {
+    // Get the file input component
+    const fileInput = this.shadowRoot?.querySelector('db-file-input');
+    if (fileInput) {
+      // Listen for upload progress events
+      fileInput.addEventListener('upload-progress', ((event: Event) => {
+        const customEvent = event as CustomEvent;
+        this.handleFileUploadProgress(customEvent);
+      }) as EventListener);
+      
+      // Listen for upload complete events
+      fileInput.addEventListener('upload-complete', ((event: Event) => {
+        const customEvent = event as CustomEvent;
+        this.handleFileUploadComplete(customEvent);
+      }) as EventListener);
+    }
+  }
 
   /**
    * Handle mapping change events
@@ -241,6 +279,48 @@ export class DbMappingUploader extends LitElement {
     const mapping = event.detail.mapping;
     this.logEvent('mapping-change', 'Mapping updated', 'success');
     console.log('Mapping changed:', mapping);
+  }
+  
+  /**
+   * Handle file upload progress events from the file input component
+   * @param event The upload progress event
+   */
+  private handleFileUploadProgress(event: CustomEvent) {
+    const { file, progress } = event.detail;
+    
+    // Update the progress state
+    this.uploadProgress = progress;
+    this.currentFile = file;
+    
+    // Update the progress bar if it exists
+    if (this.progressBar) {
+      this.progressBar.setProgress(progress);
+    }
+    
+    // Log the progress event
+    this.logEvent('upload-progress', `${file.name}: ${progress}%`);
+  }
+  
+  /**
+   * Handle file upload complete events from the file input component
+   * @param event The upload complete event
+   */
+  private handleFileUploadComplete(event: CustomEvent) {
+    const { file } = event.detail;
+    
+    this.logEvent('success', 'File uploaded successfully', 'success');
+    this.logEvent('upload-complete', `${file.name} uploaded successfully`, 'success');
+    
+    // Set the fileLoaded flag to true when upload is complete
+    this.fileLoaded = true;
+    
+    // Fetch mapping data from API after upload is complete
+    this.fetchMappingFromApi();
+    
+    // Show mapping visualization after a delay to ensure everything is loaded
+    setTimeout(() => {
+      this.showMappingVisualization = true;
+    }, 1000);
   }
 
   /**
@@ -296,8 +376,8 @@ export class DbMappingUploader extends LitElement {
         const data = JSON.parse(result);
         this.mappingData = data;
 
-        // Simulate file upload completion
-        this.simulateFileUpload(file);
+        // Log the successful parsing of the file
+        this.logEvent('success', 'JSON file parsed successfully', 'success');
 
         // Dispatch an event with the mapping data
         this.dispatchEvent(new CustomEvent('mapping-loaded', {
@@ -317,53 +397,7 @@ export class DbMappingUploader extends LitElement {
     reader.readAsText(file);
   }
 
-  /**
-   * Simulates a file upload and then fetches mapping data from the API
-   * @param file The file being uploaded
-   */
-  private simulateFileUpload(file: File) {
-    this.logEvent('upload-start', `Starting upload of ${file.name}`);
 
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-
-      if (progress <= 100) {
-        this.logEvent('upload-progress', `${file.name}: ${progress}%`);
-
-        // Dispatch progress event
-        this.dispatchEvent(new CustomEvent('upload-progress', {
-          detail: { file, progress },
-          bubbles: true,
-          composed: true
-        }));
-      }
-
-      if (progress >= 100) {
-        clearInterval(interval);
-        this.logEvent('success', 'JSON file loaded successfully', 'success');
-        this.logEvent('upload-complete', `${file.name} uploaded successfully`, 'success');
-
-        // Set the fileLoaded flag to true when progress reaches 100%
-        this.fileLoaded = true;
-
-        // Dispatch complete event
-        this.dispatchEvent(new CustomEvent('upload-complete', {
-          detail: { file, data: this.mappingData },
-          bubbles: true,
-          composed: true
-        }));
-
-        // Fetch mapping data from API after upload is complete
-        this.fetchMappingFromApi();
-
-        // Show mapping visualization after a delay to ensure everything is loaded
-        setTimeout(() => {
-          this.showMappingVisualization = true;
-        }, 1000);
-      }
-    }, 300);
-  }
 
   /**
    * Loading state for the visualizer
@@ -485,11 +519,54 @@ export class DbMappingUploader extends LitElement {
 
 
   /**
-   * Clears the event log
+   * Reference to the file input element
+   */
+  @query('db-file-input')
+  private fileInput!: HTMLElement;
+
+  /**
+   * Reference to the progress bar element
+   */
+  @query('db-progress-bar')
+  private progressBar?: HTMLElement & { setProgress: (value: number) => void };
+
+  /**
+   * Clears the event log, mapping visualization, and resets the file input
    */
   private clearEventLog() {
+    // Clear event log
     this.eventLog = [];
-    this.logEvent('info', 'Event log cleared');
+
+    // Reset mapping data and states
+    this.mappingData = null;
+    this.fileLoaded = false;
+    this.showMappingVisualization = false;
+    this.isLoading = false;
+    this.errorMessage = '';
+    this.uploadProgress = 0;
+    this.currentFile = null;
+    this.validatedMapping = null;
+    this.isValidated = false;
+
+    // Reset the file input by recreating it
+    if (this.fileInput) {
+      // Create a clone of the file input to reset it
+      const parent = this.fileInput.parentNode;
+      const clone = this.fileInput.cloneNode(true);
+      if (parent) {
+        parent.replaceChild(clone, this.fileInput);
+        // Add event listener to the new file input
+        clone.addEventListener('files-selected', (e: Event) => {
+          // Cast the event to CustomEvent to access the detail property
+          this.handleFilesSelected(e as CustomEvent<any>);
+        });
+      }
+    }
+
+    this.logEvent('info', 'Event log, mapping visualization, and file input cleared');
+
+    // Request an update to refresh the UI
+    this.requestUpdate();
   }
 
   render() {
@@ -498,7 +575,7 @@ export class DbMappingUploader extends LitElement {
         <div class="uploader-header">
           <h3 id="uploader-title">${this.title}</h3>
           <div class="controls" role="group" aria-labelledby="uploader-title">
-            <db-button @click=${this.clearEventLog}>Clear Log</db-button>
+            <db-button @click=${this.clearEventLog} aria-label="Clear log, mapping visualization, and file input">Clear All</db-button>
           </div>
         </div>
         

@@ -99,6 +99,33 @@ export class DbMappingUploader extends LitElement {
     .visualizer-container {
       margin-top: 20px;
     }
+    
+    .mapping-output {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #f5f5f5;
+    }
+    
+    .mapping-output h5 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      color: #333;
+    }
+    
+    .mapping-json {
+      overflow: auto;
+      max-height: 300px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+    }
   `;
 
   /**
@@ -143,6 +170,30 @@ export class DbMappingUploader extends LitElement {
   @property({ type: Object })
   mappingData = null;
   
+  /**
+   * Flag to track if the file has been successfully loaded
+   */
+  @state()
+  private fileLoaded = false;
+  
+  /**
+   * Flag to track if the mapping visualization should be shown
+   */
+  @state()
+  private showMappingVisualization = false;
+  
+  /**
+   * Validated mapping data for display
+   */
+  @state()
+  private validatedMapping = null;
+  
+  /**
+   * Flag to indicate if the mapping has been validated
+   */
+  @state()
+  private isValidated = false;
+  
 
 
   /**
@@ -153,6 +204,61 @@ export class DbMappingUploader extends LitElement {
 
 
 
+  /**
+   * Called after the component's first update
+   */
+  firstUpdated() {
+    // Add event listeners for mapping events
+    this.setupMappingEventListeners();
+  }
+  
+  /**
+   * Setup event listeners for mapping visualization events
+   */
+  private setupMappingEventListeners() {
+    // We need to add the event listeners after the component is rendered and updated
+    this.addEventListener('mapping-loaded', () => {
+      // Wait a bit to ensure the visualizer is in the DOM
+      setTimeout(() => {
+        const visualizer = this.shadowRoot?.querySelector('#mapping-visualizer');
+        if (visualizer) {
+          // Listen for real-time changes to the mapping
+          visualizer.addEventListener('mapping-change', (event: any) => {
+            this.handleMappingChange(event);
+          });
+          
+          // Listen for validation events
+          visualizer.addEventListener('validate-mapping', (event: any) => {
+            this.handleValidateMapping(event);
+          });
+        }
+      }, 1500);
+    });
+  }
+  
+  /**
+   * Handle mapping change events
+   */
+  private handleMappingChange(event: any) {
+    const mapping = event.detail.mapping;
+    this.logEvent('mapping-change', 'Mapping updated', 'success');
+    console.log('Mapping changed:', mapping);
+  }
+  
+  /**
+   * Handle validate mapping events
+   */
+  private handleValidateMapping(event: any) {
+    const mapping = event.detail.mapping;
+    this.validatedMapping = mapping;
+    this.isValidated = true;
+    this.logEvent('validate-mapping', 'Mapping validated', 'success');
+    console.log('Validated mapping:', mapping);
+    
+    // Force re-render to show the validated mapping
+    this.requestUpdate();
+  }
+  
   /**
    * Handles the file selection event
    * @param e The custom event containing the selected files
@@ -191,7 +297,6 @@ export class DbMappingUploader extends LitElement {
         const result = e.target?.result as string;
         const data = JSON.parse(result);
         this.mappingData = data;
-        this.logEvent('success', 'JSON file loaded successfully', 'success');
         
         // Simulate file upload completion
         this.simulateFileUpload(file);
@@ -238,17 +343,26 @@ export class DbMappingUploader extends LitElement {
       
       if (progress >= 100) {
         clearInterval(interval);
+        this.logEvent('success', 'JSON file loaded successfully', 'success');
         this.logEvent('upload-complete', `${file.name} uploaded successfully`, 'success');
+        
+        // Set the fileLoaded flag to true when progress reaches 100%
+        this.fileLoaded = true;
         
         // Dispatch complete event
         this.dispatchEvent(new CustomEvent('upload-complete', {
-          detail: { file },
+          detail: { file, data: this.mappingData },
           bubbles: true,
           composed: true
         }));
         
         // Fetch mapping data from API after upload is complete
         this.fetchMappingFromApi();
+        
+        // Show mapping visualization after a delay to ensure everything is loaded
+        setTimeout(() => {
+          this.showMappingVisualization = true;
+        }, 1000);
       }
     }, 300);
   }
@@ -289,10 +403,19 @@ export class DbMappingUploader extends LitElement {
         this.isLoading = false;
         this.errorMessage = '';
         
-        // No need to expand the visualizer section since we removed the collapse
-        
         // Update the mapping data property
         this.mappingData = data;
+        
+        // Make sure fileLoaded is true - the mapping visualization should be visible
+        // This ensures the mapping visualization is shown after a successful API call
+        if (!this.fileLoaded) {
+          this.fileLoaded = true;
+          
+          // Show mapping visualization after a delay to ensure everything is loaded
+          setTimeout(() => {
+            this.showMappingVisualization = true;
+          }, 1000);
+        }
         
         // Wait for the next render cycle to update the visualizer
         setTimeout(() => {
@@ -414,31 +537,43 @@ export class DbMappingUploader extends LitElement {
           </div>
         </div>
         
-        <!-- Mapping Visualizer Section -->
-        <div class="section visualizer-container">
-          <h4 id="visualizer-heading">Mapping Visualization</h4>
-          <div aria-labelledby="visualizer-heading">
-            ${this.isLoading ? 
-              html`<div class="loading-state" role="status" aria-live="polite">
-                <p>Loading mapping data from API...</p>
-              </div>` : 
-              this.errorMessage ? 
-                html`<div class="error-state" role="alert">
-                  <p>Error loading mapping data: ${this.errorMessage}</p>
-                  <db-button @click=${() => this.fetchMappingFromApi()}>Retry</db-button>
-                </div>` :
-                this.mappingData ? 
-                  html`<db-mapping-visualizer 
-                    id="mapping-visualizer"
-                    mapping-data=${JSON.stringify(this.mappingData)}
-                    aria-label="Database mapping visualization"
-                  ></db-mapping-visualizer>` : 
-                  html`<div class="empty-state" role="status">
-                    <p>No mapping data available. Upload a mapping file or wait for API response.</p>
-                  </div>`
-            }
+        <!-- Mapping Visualizer Section - Only shown when file is loaded successfully and visualization is ready -->
+        ${this.fileLoaded && this.showMappingVisualization ? html`
+          <div class="section visualizer-container">
+            <h4 id="visualizer-heading">Mapping Visualization</h4>
+            <div aria-labelledby="visualizer-heading">
+              ${this.isLoading ? 
+                html`<div class="loading-state" role="status" aria-live="polite">
+                  <p>Loading mapping data from API...</p>
+                </div>` : 
+                this.errorMessage ? 
+                  html`<div class="error-state" role="alert">
+                    <p>Error loading mapping data: ${this.errorMessage}</p>
+                    <db-button @click=${() => this.fetchMappingFromApi()}>Retry</db-button>
+                  </div>` :
+                  this.mappingData ? 
+                    html`<db-mapping-visualizer 
+                      id="mapping-visualizer"
+                      mapping-data=${JSON.stringify(this.mappingData)}
+                      aria-label="Database mapping visualization"
+                    ></db-mapping-visualizer>` : 
+                    html`<div class="empty-state" role="status">
+                      <p>No mapping data available. Upload a mapping file or wait for API response.</p>
+                    </div>`
+              }
+              
+              <!-- Display validated mapping data when available -->
+              ${this.isValidated && this.validatedMapping ? html`
+                <div class="mapping-output" role="region" aria-labelledby="validated-mapping-heading">
+                  <h5 id="validated-mapping-heading">${this.isValidated ? 'Validated Mapping Output:' : 'Current Mapping:'}</h5>
+                  <pre aria-live="polite" role="status" class="mapping-json">
+                    ${JSON.stringify(this.validatedMapping, null, 2)}
+                  </pre>
+                </div>
+              ` : ''}
+            </div>
           </div>
-        </div>
+        ` : ''}
       </div>
     `;
   }

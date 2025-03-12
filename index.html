@@ -45,7 +45,7 @@
     section {
       margin-bottom: 40px;
     }
-    
+
     .event-log {
       max-height: 200px;
       overflow-y: auto;
@@ -57,30 +57,30 @@
       font-size: 0.85rem;
       margin-top: 10px;
     }
-    
+
     .log-item {
       padding: 4px 0;
       border-bottom: 1px solid #eee;
     }
-    
+
     .log-item:last-child {
       border-bottom: none;
     }
-    
+
     .log-item .timestamp {
       color: #666;
       margin-right: 8px;
     }
-    
+
     .log-item .event-type {
       font-weight: bold;
       color: #03b5d2;
     }
-    
+
     .log-item.success .event-type {
       color: #28a745;
     }
-    
+
     .log-item.error .event-type {
       color: #dc3545;
     }
@@ -88,66 +88,54 @@
 </head>
 
 <body>
-  <!-- Quick access links for accessibility -->
-  <ul class="lar" aria-label="Liens d'accès rapide">
-    <li><a href="#en_tete">En-tête</a></li>
-    <li><a href="#contenu">Contenu principal</a></li>
-  </ul>
-
-  <header role="banner" id="en_tete">
-    <h1>Database Connector</h1>
-  </header>
-
   <main role="main" id="contenu">
-    <!-- Progress Bar Demo Section -->
-    <section id="progress-bar-demo" class="mt-8" aria-labelledby="progress-bar-heading">
-      <h2 id="progress-bar-heading">Progress Bar Component</h2>
-      <p>Test and interact with the DbProgressBar component.</p>
-
-      <div class="demo-container">
-        <!-- Basic Progress Bar -->
-        <div class="demo-item">
-          <h3 id="basic-progress-heading">Basic Progress Bar</h3>
-          <db-progress-bar id="basic-progress" value="45" label="Basic Progress">
-          </db-progress-bar>
-        </div>
-
-        <!-- Colored Progress Bars -->
-        <div class="demo-item">
-          <h3 id="colored-progress-heading">Colored Progress Bars</h3>
-          <db-progress-bar value="25" color="primary" label="Primary"></db-progress-bar>
-          <db-progress-bar value="50" color="success" label="Success"></db-progress-bar>
-          <db-progress-bar value="75" color="warning" label="Warning"></db-progress-bar>
-          <db-progress-bar value="90" color="danger" label="Danger"></db-progress-bar>
-        </div>
-
-        <!-- Striped and Animated -->
-        <div class="demo-item">
-          <h3 id="striped-progress-heading">Striped & Animated Progress Bars</h3>
-          <db-progress-bar value="65" striped="true" label="Striped"></db-progress-bar>
-          <db-progress-bar value="65" striped="true" animated="true" label="Animated Striped"></db-progress-bar>
-        </div>
-
-        <!-- Interactive Progress Bar -->
-        <div class="demo-item">
-          <h3 id="interactive-progress-heading">Interactive Progress Bar</h3>
-          <db-progress-bar id="interactive-progress" value="50" label="Interactive Progress"></db-progress-bar>
-
-          <div class="controls" role="group" aria-label="Progress bar controls">
-            <db-button id="decrement-btn">-10</db-button>
-            <db-button id="increment-btn">+10</db-button>
-            <db-button id="reset-btn">Reset</db-button>
-            <db-button id="complete-btn">Complete</db-button>
-          </div>
-
-          <div class="progress-info" aria-live="polite" role="status" id="progress-info">
-            Current progress: 50%
-          </div>
-        </div>
-      </div>
-    </section>
-
     <div class="demo-container">
+      <!-- File Input and Mapping Uploader Demo Section -->
+      <section id="file-input-demo" class="mt-8" aria-labelledby="file-input-heading">
+        <div class="demo-container">
+          <div class="demo-item">
+            <h3 id="file-input-heading">File Input Demo</h3>
+            <p>Upload files and track upload events</p>
+            
+            <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap;">
+              <!-- Standard File Input Component -->
+              <div style="flex: 1; min-width: 300px;">
+                <h4>Standard File Input</h4>
+                <db-file-input id="demo-file-input" accept=".jpg,.jpeg,.png,.pdf,.docx,.txt" multiple
+                  label="Drag & Drop your files here" sublabel="or click to browse" aria-label="File upload area">
+                </db-file-input>
+
+                <div class="controls" role="group" aria-label="File input controls">
+                  <db-button id="clear-files">Clear All Files</db-button>
+                </div>
+
+                <div id="file-list" class="mt-4" aria-live="polite" role="region" aria-label="Uploaded files status">
+                  <p>No files selected</p>
+                </div>
+
+                <div id="upload-events" class="mt-4" aria-live="polite">
+                  <h4>Upload Events</h4>
+                  <div id="event-log" class="event-log" tabindex="0" role="log" aria-label="Upload event log"></div>
+                </div>
+              </div>
+              
+              <!-- Mapping Uploader Component -->
+              <div style="flex: 1; min-width: 300px;">
+                <h4>Mapping Uploader</h4>
+                <db-mapping-uploader 
+                  id="demo-mapping-uploader" 
+                  accept=".json,.csv,.xlsx" 
+                  title="Database Mapping Uploader" 
+                  label="Drag & Drop your mapping file here" 
+                  sublabel="or click to browse" 
+                  api-url="http://localhost:3100/api/mapping"
+                  aria-label="Mapping file upload area">
+                </db-mapping-uploader>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <div class="demo-item">
         <!-- Mapping Visualizer Section -->
         <section id="mapping-visualization" class="mt-8" aria-labelledby="mapping-heading">
@@ -157,44 +145,6 @@
         </section>
       </div>
     </div>
-
-    <!-- File Input Demo Section -->
-    <section id="file-input-demo" class="mt-8" aria-labelledby="file-input-heading">
-      <div class="demo-container">
-        <div class="demo-item">
-          <h2 id="file-input-heading">File Input Component</h2>
-          <p>Test and interact with the DbFileInput component with upload progress tracking.</p>
-          
-          <!-- Basic File Input -->
-          <div class="demo-item">
-            <h3 id="basic-file-input-heading">File Upload with Progress</h3>
-            <p>Drag and drop files or click to browse your device. Watch the upload progress in real-time.</p>
-            
-            <db-file-input 
-              id="demo-file-input"
-              accept=".jpg,.jpeg,.png,.pdf,.docx,.txt"
-              multiple
-              label="Drag & Drop your files here"
-              sublabel="or click to browse"
-              aria-label="File upload area">
-            </db-file-input>
-            
-            <div class="controls" role="group" aria-label="File input controls">
-              <db-button id="clear-files">Clear All Files</db-button>
-            </div>
-            
-            <div id="file-list" class="mt-4" aria-live="polite" role="region" aria-label="Uploaded files status">
-              <p>No files selected</p>
-            </div>
-            
-            <div id="upload-events" class="mt-4" aria-live="polite">
-              <h4>Upload Events</h4>
-              <div id="event-log" class="event-log" tabindex="0" role="log" aria-label="Upload event log"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <script>
@@ -305,7 +255,7 @@
       }
 
       // Fetch the mapping data from the JSON file
-      fetch('./src/data/mapping.json')
+      fetch('http://localhost:3100/api/mapping')
         .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -330,56 +280,82 @@
         });
     });
 
-    // File Input Component Demo
+    // File Input and Mapping Uploader Component Demo
     document.addEventListener('DOMContentLoaded', () => {
+      // Initialize the Mapping Uploader component
+      const mappingUploader = document.getElementById('demo-mapping-uploader');
+      const visualizer = document.getElementById('mapping-visualizer');
+      
+      if (mappingUploader) {
+        console.log('Mapping Uploader component initialized');
+        
+        // Listen for mapping-loaded events
+        mappingUploader.addEventListener('mapping-loaded', (event) => {
+          const data = event.detail.data;
+          console.log('Mapping data loaded:', data);
+          
+          // If we have a visualizer, update it with the loaded data
+          if (visualizer) {
+            visualizer.mapping = data;
+            updateMappingOutput(data);
+          }
+        });
+        
+        // Listen for log events
+        mappingUploader.addEventListener('log-event', (event) => {
+          console.log('Mapping uploader event:', event.detail);
+        });
+      }
+      
+      // Standard File Input Component
       const fileInput = document.getElementById('demo-file-input');
       const fileList = document.getElementById('file-list');
       const clearButton = document.getElementById('clear-files');
       const eventLog = document.getElementById('event-log');
-      
+
       if (fileInput) {
         // Listen for files-selected events
         fileInput.addEventListener('files-selected', (event) => {
           const files = event.detail.files;
-          
+
           // Log the event
           logEvent('files-selected', `${files.length} file(s) selected`);
-          
+
           // Update the file list
           if (fileList) {
             fileList.innerHTML = '';
-            
+
             if (files.length === 0) {
               fileList.innerHTML = '<p>No files selected</p>';
             } else {
               const list = document.createElement('ul');
               list.setAttribute('role', 'list');
               list.setAttribute('aria-label', 'Selected files');
-              
+
               files.forEach(file => {
                 const item = document.createElement('li');
                 item.textContent = `${file.name} (${formatFileSize(file.size)})`;
                 list.appendChild(item);
               });
-              
+
               fileList.appendChild(list);
             }
           }
         });
-        
+
         // Listen for upload progress events
         fileInput.addEventListener('upload-progress', (event) => {
           const { file, progress } = event.detail;
           logEvent('upload-progress', `${file.name}: ${progress}%`);
         });
-        
+
         // Listen for upload complete events
         fileInput.addEventListener('upload-complete', (event) => {
           const { file } = event.detail;
           logEvent('upload-complete', `${file.name} uploaded successfully`, 'success');
         });
       }
-      
+
       // Clear files button
       if (clearButton && fileInput) {
         clearButton.addEventListener('click', () => {
@@ -387,28 +363,28 @@
           logEvent('clear-files', 'All files cleared');
         });
       }
-      
+
       // Log events to the event log
       function logEvent(eventType, message, type = 'info') {
         if (!eventLog) return;
-        
+
         const timestamp = new Date().toLocaleTimeString();
         const logItem = document.createElement('div');
         logItem.className = `log-item ${type}`;
         logItem.innerHTML = `<span class="timestamp">${timestamp}</span> <span class="event-type">${eventType}</span>: ${message}`;
-        
+
         eventLog.appendChild(logItem);
         eventLog.scrollTop = eventLog.scrollHeight; // Auto-scroll to bottom
       }
-      
+
       // Format file size helper function
       function formatFileSize(bytes) {
         if (bytes === 0) return '0 Bytes';
-        
+
         const k = 1024;
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        
+
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
       }
     });

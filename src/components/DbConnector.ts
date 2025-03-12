@@ -1,5 +1,5 @@
 import { html, LitElement, css, unsafeCSS } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, state, property } from 'lit/decorators.js';
 // @ts-ignore: Allow SCSS import
 import styles from '../styles/db-connector.scss?inline';
 
@@ -42,6 +42,12 @@ export class DbConnector extends LitElement {
     `;
 
     /**
+     * API URL for mapping data
+     */
+    @property({ type: String })
+    apiUrl = 'http://localhost:3100/api/mapping';
+    
+    /**
      * Current schema data
      */
     @state()
@@ -66,7 +72,9 @@ export class DbConnector extends LitElement {
             </section>
             
             <section class="connector-section">
-                <db-mapping-uploader></db-mapping-uploader>
+                <db-mapping-uploader
+                  .apiUrl=${this.apiUrl}
+                ></db-mapping-uploader>
             </section>
         </div>
         `;

@@ -132,13 +132,13 @@ export class DbMappingUploader extends LitElement {
    * The title of the uploader component
    */
   @property({ type: String })
-  title = 'Database Mapping Uploader';
+  title = 'Database Data Uploader';
 
   /**
    * The label for the file input area
    */
   @property({ type: String })
-  label = 'Drag & Drop your mapping file here';
+  label = 'Drag & Drop your data file here';
 
   /**
    * The sublabel for the file input area
@@ -228,7 +228,7 @@ export class DbMappingUploader extends LitElement {
   firstUpdated() {
     // Add event listeners for mapping events
     this.setupMappingEventListeners();
-    
+
     // Add event listeners for file input events
     this.setupFileInputEventListeners();
   }
@@ -256,7 +256,7 @@ export class DbMappingUploader extends LitElement {
       }, 1500);
     });
   }
-  
+
   /**
    * Setup event listeners for file input events
    */
@@ -264,17 +264,27 @@ export class DbMappingUploader extends LitElement {
     // Get the file input component
     const fileInput = this.shadowRoot?.querySelector('db-file-input');
     if (fileInput) {
+      console.log('Setting up file input event listeners');
+      
       // Listen for upload progress events
       fileInput.addEventListener('upload-progress', ((event: Event) => {
+        console.log('Upload progress event received');
         const customEvent = event as CustomEvent;
         this.handleFileUploadProgress(customEvent);
       }) as EventListener);
-      
+
       // Listen for upload complete events
       fileInput.addEventListener('upload-complete', ((event: Event) => {
+        console.log('Upload complete event received');
         const customEvent = event as CustomEvent;
         this.handleFileUploadComplete(customEvent);
       }) as EventListener);
+      
+      // Log that listeners were added successfully
+      this.logEvent('info', 'File input event listeners set up successfully');
+    } else {
+      console.error('File input component not found');
+      this.logEvent('error', 'File input component not found', 'error');
     }
   }
 
@@ -286,43 +296,52 @@ export class DbMappingUploader extends LitElement {
     this.logEvent('mapping-change', 'Mapping updated', 'success');
     console.log('Mapping changed:', mapping);
   }
-  
+
   /**
    * Handle file upload progress events from the file input component
    * @param event The upload progress event
    */
   private handleFileUploadProgress(event: CustomEvent) {
     const { file, progress } = event.detail;
-    
+    console.log('Upload progress event:', event.detail);
+
     // Update the progress state
     this.uploadProgress = progress;
     this.currentFile = file;
-    
+
     // Update the progress bar if it exists
     if (this.progressBar) {
       this.progressBar.setProgress(progress);
     }
-    
+
     // Log the progress event
     this.logEvent('upload-progress', `${file.name}: ${progress}%`);
+    
+    // Force update to ensure the UI reflects the current progress
+    this.requestUpdate();
   }
-  
+
   /**
    * Handle file upload complete events from the file input component
    * @param event The upload complete event
    */
   private handleFileUploadComplete(event: CustomEvent) {
     const { file } = event.detail;
-    
+    console.log('Upload complete event:', event.detail);
+
     this.logEvent('success', 'File uploaded successfully', 'success');
     this.logEvent('upload-complete', `${file.name} uploaded successfully`, 'success');
+
+    // Store the current file for API calls
+    this.currentFile = file;
     
     // Set the fileLoaded flag to true when upload is complete
     this.fileLoaded = true;
-    
+
     // Fetch mapping data from API after upload is complete
+    console.log('About to call fetchMappingFromApi');
     this.fetchMappingFromApi();
-    
+
     // Show mapping visualization after a delay to ensure everything is loaded
     setTimeout(() => {
       this.showMappingVisualization = true;
@@ -351,9 +370,10 @@ export class DbMappingUploader extends LitElement {
     const files = e.detail.files;
     this.logEvent('files-selected', `${files.length} file(s) selected`);
 
-    // Process the first file if it exists
+    // Store the current file for later use in API calls
     if (files.length > 0) {
       const file = files[0];
+      this.currentFile = file;
       this.logEvent('processing', `Processing file: ${file.name}`);
 
       // Read the file based on its type
@@ -422,19 +442,25 @@ export class DbMappingUploader extends LitElement {
    * @returns An object with validation result and error message if any
    */
   private validateApiRequirements(): { isValid: boolean; errorMessage?: string } {
+    console.log('Validating API requirements:', {
+      schemaData: this.schemaData,
+      currentFile: this.currentFile,
+      fileLoaded: this.fileLoaded
+    });
+    
     // Check if schema data is available
     if (!this.schemaData) {
-      return { 
-        isValid: false, 
-        errorMessage: 'Database schema is required. Please define a schema in the Database Schema Editor.' 
+      return {
+        isValid: false,
+        errorMessage: 'Database schema is required. Please define a schema in the Database Schema Editor.'
       };
     }
 
     // Check if file has been uploaded
     if (!this.currentFile || !this.fileLoaded) {
-      return { 
-        isValid: false, 
-        errorMessage: 'A mapping file is required. Please upload a file first.' 
+      return {
+        isValid: false,
+        errorMessage: 'A data file is required. Please upload a file first.'
       };
     }
 
@@ -445,15 +471,19 @@ export class DbMappingUploader extends LitElement {
    * Fetches mapping data from the API
    */
   private fetchMappingFromApi() {
+    console.log('fetchMappingFromApi called');
+    
     // Validate requirements before making API call
     const validation = this.validateApiRequirements();
     if (!validation.isValid) {
       this.errorMessage = validation.errorMessage || 'Missing required data for API call';
       this.logEvent('error', this.errorMessage, 'error');
+      console.error('API validation failed:', this.errorMessage);
       return;
     }
 
-    this.logEvent('api-request', `Fetching mapping data from ${this.apiUrl}`);
+    this.logEvent('api-request', `Fetching data from ${this.apiUrl}`);
+    console.log('Making API request to:', this.apiUrl);
 
     // Set loading state
     this.isLoading = true;

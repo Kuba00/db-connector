@@ -28,26 +28,11 @@
 <body>
   <main role="main" id="contenu">
     <div class="demo-container">
-      <!-- File Input and Mapping Uploader Demo Section -->
-      <section id="database-schema-section" class="mt-8" aria-labelledby="schema-heading">
-        <div class="demo-container">
-          <div class="demo-item">
-            <!-- Database Schema Editor Component -->
-            <db-schema-editor id="demo-schema-editor" title="Database Schema Definition"
-              aria-labelledby="schema-heading">
-            </db-schema-editor>
-          </div>
-        </div>
-      </section>
-
-      <section id="file-input-demo" aria-labelledby="mapping-heading">
-        <!-- Database Mapping Uploader Component -->
-        <div style="flex: 1; min-width: 300px;">
-          <db-mapping-uploader id="demo-mapping-uploader" accept=".json,.csv,.xlsx" title="Database Mapping Uploader"
-            label="Drag & Drop your mapping file here" sublabel="or click to browse"
-            api-url="http://localhost:3100/api/mapping" aria-label="Mapping file upload area">
-          </db-mapping-uploader>
-        </div>
+      <!-- Database Connector Demo Section -->
+      <section id="database-connector-section" class="mt-8" aria-labelledby="connector-heading">
+        <!-- Database Connector Component -->
+        <db-connector id="demo-db-connector" aria-labelledby="connector-heading">
+        </db-connector>
       </section>
     </div>
   </main>

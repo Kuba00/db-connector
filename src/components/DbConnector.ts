@@ -1,49 +1,73 @@
 import { html, LitElement, css, unsafeCSS } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 // @ts-ignore: Allow SCSS import
 import styles from '../styles/db-connector.scss?inline';
+
+// Import components
+import './DbSchemaEditor';
+import './DbMappingUploader';
+import './DbButton';
 
 
 @customElement('db-connector')
 export class DbConnector extends LitElement {
-    static styles = css`${unsafeCSS(styles)}`;
+    static styles = css`${unsafeCSS(styles)}
+        :host {
+            display: block;
+            width: 100%;
+            font-family: 'Hind', sans-serif;
+        }
+        
+        .db-connector {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .connector-header {
+            margin-bottom: 20px;
+        }
+        
+        .connector-header h2 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .connector-section {
+            margin-bottom: 20px;
+        }
+    `;
 
+    /**
+     * Current schema data
+     */
+    @state()
+    private schemaData: any = null;
+
+    /**
+     * Handle schema updates from the schema editor
+     */
+    private handleSchemaUpdate(e: CustomEvent) {
+        this.schemaData = e.detail.schema;
+        console.log('Schema updated:', this.schemaData);
+    }
 
     render() {
         return html`
-        <div class="db-connector">
-            <form>
-                <div class="form-group">
-                    <div class="grid-container">
-                        <div class="input-group">
-                            <label for="username">Username</label>
-                            <div class="input-wrapper username-input">
-                                <input type="text" name="username" id="username" placeholder="janesmith">
-                            </div>
-                        </div>
-
-                        <div class="input-group full-width">
-                            <label for="about">About</label>
-                            <div class="input-wrapper">
-                                <textarea name="about" id="about" rows="3"></textarea>
-                            </div>
-                            <p class="help-text">Write a few sentences about yourself.</p>
-                        </div>
-
-                        <div class="input-group full-width">
-                            <label for="file-upload">File Upload</label>
-                            <div class="input-wrapper">
-                                <slot></slot>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
+        <div class="db-connector" role="main" id="contenu">
+            <section class="connector-section">
+                <db-schema-editor 
+                    title="Database Schema Editor" 
+                    @schema-updated=${this.handleSchemaUpdate}>
+                </db-schema-editor>
+            </section>
+            
+            <section class="connector-section">
+                <db-mapping-uploader></db-mapping-uploader>
+            </section>
         </div>
         `;
     }

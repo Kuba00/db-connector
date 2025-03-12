@@ -8,6 +8,44 @@
   <title>DB Connector</title>
   <link rel="stylesheet" href="./src/index.css" />
   <script type="module" src="./src/index.ts"></script>
+  <style>
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .demo-item {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    .progress-info {
+      font-weight: 500;
+      margin-top: 10px;
+      color: #555;
+    }
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+  </style>
 </head>
 
 <body>
@@ -22,8 +60,57 @@
   </header>
 
   <main role="main" id="content">
-    <section id="mapping-visualization" class="mt-8">
-      <h2>Database Mapping</h2>
+    <!-- Progress Bar Demo Section -->
+    <section id="progress-bar-demo" class="mt-8" aria-labelledby="progress-bar-heading">
+      <h2 id="progress-bar-heading">Progress Bar Component</h2>
+      <p>Test and interact with the DbProgressBar component.</p>
+
+      <div class="demo-container">
+        <!-- Basic Progress Bar -->
+        <div class="demo-item">
+          <h3 id="basic-progress-heading">Basic Progress Bar</h3>
+          <db-progress-bar id="basic-progress" value="45" label="Basic Progress">
+          </db-progress-bar>
+        </div>
+
+        <!-- Colored Progress Bars -->
+        <div class="demo-item">
+          <h3 id="colored-progress-heading">Colored Progress Bars</h3>
+          <db-progress-bar value="25" color="primary" label="Primary"></db-progress-bar>
+          <db-progress-bar value="50" color="success" label="Success"></db-progress-bar>
+          <db-progress-bar value="75" color="warning" label="Warning"></db-progress-bar>
+          <db-progress-bar value="90" color="danger" label="Danger"></db-progress-bar>
+        </div>
+
+        <!-- Striped and Animated -->
+        <div class="demo-item">
+          <h3 id="striped-progress-heading">Striped & Animated Progress Bars</h3>
+          <db-progress-bar value="65" striped="true" label="Striped"></db-progress-bar>
+          <db-progress-bar value="65" striped="true" animated="true" label="Animated Striped"></db-progress-bar>
+        </div>
+
+        <!-- Interactive Progress Bar -->
+        <div class="demo-item">
+          <h3 id="interactive-progress-heading">Interactive Progress Bar</h3>
+          <db-progress-bar id="interactive-progress" value="50" label="Interactive Progress"></db-progress-bar>
+
+          <div class="controls" role="group" aria-label="Progress bar controls">
+            <db-button id="decrement-btn">-10</db-button>
+            <db-button id="increment-btn">+10</db-button>
+            <db-button id="reset-btn">Reset</db-button>
+            <db-button id="complete-btn">Complete</db-button>
+          </div>
+
+          <div class="progress-info" aria-live="polite" role="status" id="progress-info">
+            Current progress: 50%
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mapping Visualizer Section -->
+    <section id="mapping-visualization" class="mt-8" aria-labelledby="mapping-heading">
+      <h2 id="mapping-heading">Database Mapping</h2>
       <p>Review and configure the mapping between source and target fields.</p>
 
       <!-- Using the db-mapping-visualizer component with a JSON object prop -->
@@ -33,16 +120,68 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Progress Bar Demo Functionality
+      const interactiveProgress = document.getElementById('interactive-progress');
+      const decrementBtn = document.getElementById('decrement-btn');
+      const incrementBtn = document.getElementById('increment-btn');
+      const resetBtn = document.getElementById('reset-btn');
+      const completeBtn = document.getElementById('complete-btn');
+      const progressInfo = document.getElementById('progress-info');
+
+      // Update the progress info text
+      function updateProgressInfo(value) {
+        if (progressInfo) {
+          progressInfo.textContent = `Current progress: ${Math.round(value)}%`;
+        }
+      }
+
+      // Add event listeners to the buttons
+      if (interactiveProgress) {
+        // Listen for progress change events
+        interactiveProgress.addEventListener('progress-change', (event) => {
+          updateProgressInfo(event.detail.percentage);
+        });
+
+        // Decrement button
+        if (decrementBtn) {
+          decrementBtn.addEventListener('click', () => {
+            interactiveProgress.decrement(10);
+          });
+        }
+
+        // Increment button
+        if (incrementBtn) {
+          incrementBtn.addEventListener('click', () => {
+            interactiveProgress.increment(10);
+          });
+        }
+
+        // Reset button
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            interactiveProgress.setProgress(0);
+          });
+        }
+
+        // Complete button
+        if (completeBtn) {
+          completeBtn.addEventListener('click', () => {
+            interactiveProgress.setProgress(100);
+          });
+        }
+      }
+
+      // Mapping Visualizer Functionality
       const visualizer = document.getElementById('mapping-visualizer');
-      
+
       // Helper function to update the UI with mapping data
       function updateMappingOutput(mapping, isValidated = false) {
         // Log the mapping to the console
         console.log(`Received ${isValidated ? 'validated' : 'changed'} mapping:`, mapping);
-        
+
         // Create a formatted JSON string for display
         const formattedJson = JSON.stringify(mapping, null, 2);
-        
+
         // Create or update the output element
         const outputElement = document.createElement('pre');
         outputElement.setAttribute('aria-live', 'polite');
@@ -55,13 +194,13 @@
         outputElement.style.marginTop = '20px';
         outputElement.style.overflow = 'auto';
         outputElement.style.maxHeight = '300px';
-        
+
         // Add a heading for the output
         const heading = document.createElement('h3');
         heading.textContent = isValidated ? 'Validated Mapping Output:' : 'Current Mapping:';
         heading.id = 'mapping-output-heading';
         outputElement.setAttribute('aria-labelledby', 'mapping-output-heading');
-        
+
         // Clear any previous output and add the new one
         const outputContainer = document.getElementById('mapping-output') || document.createElement('div');
         if (!document.getElementById('mapping-output')) {
@@ -72,20 +211,20 @@
         outputContainer.appendChild(heading);
         outputContainer.appendChild(outputElement);
       }
-      
+
       // Add event listeners for both mapping-change and validate-mapping events
       if (visualizer) {
         // Listen for real-time changes to the mapping
         visualizer.addEventListener('mapping-change', (event) => {
           updateMappingOutput(event.detail.mapping, false);
         });
-        
+
         // Listen for validation events
         visualizer.addEventListener('validate-mapping', (event) => {
           updateMappingOutput(event.detail.mapping, true);
         });
       }
-      
+
       // Fetch the mapping data from the JSON file
       fetch('./src/data/mapping.json')
         .then(response => {

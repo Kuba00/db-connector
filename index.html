@@ -41,20 +41,12 @@
       </section>
 
       <section id="file-input-demo" aria-labelledby="mapping-heading">
-        <div class="demo-container">
-          <div class="demo-item">
-            <h3 id="mapping-heading">Database Mapping</h3>
-            <p>Upload your data file to map it to the defined schema</p>
-
-            <!-- Database Mapping Uploader Component -->
-            <div style="flex: 1; min-width: 300px;">
-              <db-mapping-uploader id="demo-mapping-uploader" accept=".json,.csv,.xlsx"
-                title="Database Mapping Uploader" label="Drag & Drop your mapping file here"
-                sublabel="or click to browse" api-url="http://localhost:3100/api/mapping"
-                aria-label="Mapping file upload area">
-              </db-mapping-uploader>
-            </div>
-          </div>
+        <!-- Database Mapping Uploader Component -->
+        <div style="flex: 1; min-width: 300px;">
+          <db-mapping-uploader id="demo-mapping-uploader" accept=".json,.csv,.xlsx" title="Database Mapping Uploader"
+            label="Drag & Drop your mapping file here" sublabel="or click to browse"
+            api-url="http://localhost:3100/api/mapping" aria-label="Mapping file upload area">
+          </db-mapping-uploader>
         </div>
       </section>
     </div>

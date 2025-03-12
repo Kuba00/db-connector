@@ -169,31 +169,31 @@ export class DbMappingUploader extends LitElement {
    */
   @property({ type: Object })
   mappingData = null;
-  
+
   /**
    * Flag to track if the file has been successfully loaded
    */
   @state()
   private fileLoaded = false;
-  
+
   /**
    * Flag to track if the mapping visualization should be shown
    */
   @state()
   private showMappingVisualization = false;
-  
+
   /**
    * Validated mapping data for display
    */
   @state()
   private validatedMapping = null;
-  
+
   /**
    * Flag to indicate if the mapping has been validated
    */
   @state()
   private isValidated = false;
-  
+
 
 
   /**
@@ -211,7 +211,7 @@ export class DbMappingUploader extends LitElement {
     // Add event listeners for mapping events
     this.setupMappingEventListeners();
   }
-  
+
   /**
    * Setup event listeners for mapping visualization events
    */
@@ -226,7 +226,7 @@ export class DbMappingUploader extends LitElement {
           visualizer.addEventListener('mapping-change', (event: any) => {
             this.handleMappingChange(event);
           });
-          
+
           // Listen for validation events
           visualizer.addEventListener('validate-mapping', (event: any) => {
             this.handleValidateMapping(event);
@@ -235,7 +235,7 @@ export class DbMappingUploader extends LitElement {
       }, 1500);
     });
   }
-  
+
   /**
    * Handle mapping change events
    */
@@ -244,7 +244,7 @@ export class DbMappingUploader extends LitElement {
     this.logEvent('mapping-change', 'Mapping updated', 'success');
     console.log('Mapping changed:', mapping);
   }
-  
+
   /**
    * Handle validate mapping events
    */
@@ -254,11 +254,11 @@ export class DbMappingUploader extends LitElement {
     this.isValidated = true;
     this.logEvent('validate-mapping', 'Mapping validated', 'success');
     console.log('Validated mapping:', mapping);
-    
+
     // Force re-render to show the validated mapping
     this.requestUpdate();
   }
-  
+
   /**
    * Handles the file selection event
    * @param e The custom event containing the selected files
@@ -266,12 +266,12 @@ export class DbMappingUploader extends LitElement {
   private handleFilesSelected(e: CustomEvent) {
     const files = e.detail.files;
     this.logEvent('files-selected', `${files.length} file(s) selected`);
-    
+
     // Process the first file if it exists
     if (files.length > 0) {
       const file = files[0];
       this.logEvent('processing', `Processing file: ${file.name}`);
-      
+
       // Read the file based on its type
       if (file.name.endsWith('.json')) {
         this.readJsonFile(file);
@@ -291,16 +291,16 @@ export class DbMappingUploader extends LitElement {
    */
   private readJsonFile(file: File) {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const result = e.target?.result as string;
         const data = JSON.parse(result);
         this.mappingData = data;
-        
+
         // Simulate file upload completion
         this.simulateFileUpload(file);
-        
+
         // Dispatch an event with the mapping data
         this.dispatchEvent(new CustomEvent('mapping-loaded', {
           detail: { data },
@@ -311,28 +311,28 @@ export class DbMappingUploader extends LitElement {
         this.logEvent('error', `Error parsing JSON: ${error}`, 'error');
       }
     };
-    
+
     reader.onerror = () => {
       this.logEvent('error', 'Error reading file', 'error');
     };
-    
+
     reader.readAsText(file);
   }
-  
+
   /**
    * Simulates a file upload and then fetches mapping data from the API
    * @param file The file being uploaded
    */
   private simulateFileUpload(file: File) {
-    this.logEvent('upload-start', `Starting upload of ${file.name}`);  
-    
+    this.logEvent('upload-start', `Starting upload of ${file.name}`);
+
     let progress = 0;
     const interval = setInterval(() => {
       progress += 10;
-      
+
       if (progress <= 100) {
         this.logEvent('upload-progress', `${file.name}: ${progress}%`);
-        
+
         // Dispatch progress event
         this.dispatchEvent(new CustomEvent('upload-progress', {
           detail: { file, progress },
@@ -340,25 +340,25 @@ export class DbMappingUploader extends LitElement {
           composed: true
         }));
       }
-      
+
       if (progress >= 100) {
         clearInterval(interval);
         this.logEvent('success', 'JSON file loaded successfully', 'success');
         this.logEvent('upload-complete', `${file.name} uploaded successfully`, 'success');
-        
+
         // Set the fileLoaded flag to true when progress reaches 100%
         this.fileLoaded = true;
-        
+
         // Dispatch complete event
         this.dispatchEvent(new CustomEvent('upload-complete', {
           detail: { file, data: this.mappingData },
           bubbles: true,
           composed: true
         }));
-        
+
         // Fetch mapping data from API after upload is complete
         this.fetchMappingFromApi();
-        
+
         // Show mapping visualization after a delay to ensure everything is loaded
         setTimeout(() => {
           this.showMappingVisualization = true;
@@ -366,7 +366,7 @@ export class DbMappingUploader extends LitElement {
       }
     }, 300);
   }
-  
+
   /**
    * Loading state for the visualizer
    */
@@ -384,11 +384,11 @@ export class DbMappingUploader extends LitElement {
    */
   private fetchMappingFromApi() {
     this.logEvent('api-request', `Fetching mapping data from ${this.apiUrl}`);
-    
+
     // Set loading state
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     fetch(this.apiUrl)
       .then(response => {
         if (!response.ok) {
@@ -398,25 +398,25 @@ export class DbMappingUploader extends LitElement {
       })
       .then(data => {
         this.logEvent('api-success', 'Mapping data fetched successfully', 'success');
-        
+
         // Reset loading and error states
         this.isLoading = false;
         this.errorMessage = '';
-        
+
         // Update the mapping data property
         this.mappingData = data;
-        
+
         // Make sure fileLoaded is true - the mapping visualization should be visible
         // This ensures the mapping visualization is shown after a successful API call
         if (!this.fileLoaded) {
           this.fileLoaded = true;
-          
+
           // Show mapping visualization after a delay to ensure everything is loaded
           setTimeout(() => {
             this.showMappingVisualization = true;
           }, 1000);
         }
-        
+
         // Wait for the next render cycle to update the visualizer
         setTimeout(() => {
           // Update the mapping visualizer with the new data
@@ -425,17 +425,17 @@ export class DbMappingUploader extends LitElement {
             visualizer.setAttribute('mapping-data', JSON.stringify(data));
           }
         }, 0);
-        
+
         // Dispatch an event with the mapping data
         this.dispatchEvent(new CustomEvent('mapping-loaded', {
           detail: { data },
           bubbles: true,
           composed: true
         }));
-        
+
         // Force re-render to ensure the visualizer is updated
         this.requestUpdate();
-        
+
         // Announce to screen readers that mapping data is loaded
         const announcement = document.createElement('div');
         announcement.setAttribute('role', 'status');
@@ -445,17 +445,17 @@ export class DbMappingUploader extends LitElement {
         announcement.style.height = '1px';
         announcement.style.overflow = 'hidden';
         announcement.textContent = 'Mapping data loaded successfully';
-        
+
         document.body.appendChild(announcement);
         setTimeout(() => document.body.removeChild(announcement), 3000);
       })
       .catch(error => {
         this.logEvent('api-error', `Error fetching mapping data: ${error}`, 'error');
-        
+
         // Set error state
         this.isLoading = false;
         this.errorMessage = error.message;
-        
+
         // Force re-render to show the error message
         this.requestUpdate();
       });
@@ -470,12 +470,12 @@ export class DbMappingUploader extends LitElement {
   private logEvent(type: string, message: string, eventClass: string = 'info') {
     const now = new Date();
     const timestamp = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-    
+
     this.eventLog = [
       { timestamp, type, message, eventClass },
       ...this.eventLog
     ].slice(0, 50); // Keep only the last 50 events
-    
+
     // Dispatch an event for external listeners
     this.dispatchEvent(new CustomEvent('log-event', {
       detail: { timestamp, type, message, eventClass },
@@ -497,13 +497,6 @@ export class DbMappingUploader extends LitElement {
   render() {
     return html`
       <div class="uploader-container" role="region" aria-label="Database mapping uploader" id="mapping-uploader">
-        <!-- Quick access links for accessibility -->
-        <ul class="lar" aria-label="Liens d'accès rapide">
-          <li><a href="#uploader-title">Titre de l'uploader</a></li>
-          <li><a href="#event-log-heading">Journal des événements</a></li>
-          <li><a href="#visualizer-heading">Visualisation du mapping</a></li>
-        </ul>
-        
         <div class="uploader-header">
           <h3 id="uploader-title">${this.title}</h3>
           <div class="controls" role="group" aria-labelledby="uploader-title">
@@ -525,9 +518,9 @@ export class DbMappingUploader extends LitElement {
         <div class="section">
           <h4 id="event-log-heading">Event Log</h4>
           <div class="event-log" tabindex="0" role="log" aria-label="Upload event log" aria-live="polite" aria-labelledby="event-log-heading">
-            ${this.eventLog.length === 0 
-              ? html`<div class="log-item">No events yet</div>` 
-              : this.eventLog.map(event => html`
+            ${this.eventLog.length === 0
+        ? html`<div class="log-item">No events yet</div>`
+        : this.eventLog.map(event => html`
                 <div class="log-item ${event.eventClass}">
                   <span class="timestamp">${event.timestamp}</span>
                   <span class="event-type">[${event.type}]</span>
@@ -542,25 +535,25 @@ export class DbMappingUploader extends LitElement {
           <div class="section visualizer-container">
             <h4 id="visualizer-heading">Mapping Visualization</h4>
             <div aria-labelledby="visualizer-heading">
-              ${this.isLoading ? 
-                html`<div class="loading-state" role="status" aria-live="polite">
+              ${this.isLoading ?
+          html`<div class="loading-state" role="status" aria-live="polite">
                   <p>Loading mapping data from API...</p>
-                </div>` : 
-                this.errorMessage ? 
-                  html`<div class="error-state" role="alert">
+                </div>` :
+          this.errorMessage ?
+            html`<div class="error-state" role="alert">
                     <p>Error loading mapping data: ${this.errorMessage}</p>
                     <db-button @click=${() => this.fetchMappingFromApi()}>Retry</db-button>
                   </div>` :
-                  this.mappingData ? 
-                    html`<db-mapping-visualizer 
+            this.mappingData ?
+              html`<db-mapping-visualizer 
                       id="mapping-visualizer"
                       mapping-data=${JSON.stringify(this.mappingData)}
                       aria-label="Database mapping visualization"
-                    ></db-mapping-visualizer>` : 
-                    html`<div class="empty-state" role="status">
+                    ></db-mapping-visualizer>` :
+              html`<div class="empty-state" role="status">
                       <p>No mapping data available. Upload a mapping file or wait for API response.</p>
                     </div>`
-              }
+        }
               
               <!-- Display validated mapping data when available -->
               ${this.isValidated && this.validatedMapping ? html`

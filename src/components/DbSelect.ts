@@ -46,8 +46,10 @@ export class DbSelect extends LitElement {
     private dropdown!: HTMLUListElement;
 
     private handleClickOutside = (e: MouseEvent) => {
-        const target = e.target as Node;
-        if (!this.contains(target)) {
+        const path = e.composedPath();
+        
+        // Check if the click was inside this component
+        if (!path.includes(this)) {
             this.closeDropdown();
         }
     };
@@ -68,6 +70,16 @@ export class DbSelect extends LitElement {
             this.focusedIndex = this.options.findIndex(opt => opt.value === this.value);
             this.focusedIndex = this.focusedIndex === -1 ? 0 : this.focusedIndex;
             requestAnimationFrame(() => this.updateFocus());
+            
+            // Ensure the dropdown is visible and positioned correctly
+            setTimeout(() => {
+                const dropdown = this.shadowRoot?.querySelector('.select-dropdown');
+                if (dropdown instanceof HTMLElement) {
+                    // Force the dropdown to be visible
+                    dropdown.style.display = 'block';
+                    dropdown.style.zIndex = '1000';
+                }
+            }, 0);
         } else {
             this.focusedIndex = -1;
             this.selectButton.focus();
@@ -149,7 +161,7 @@ export class DbSelect extends LitElement {
         const displayText = selectedOption ? selectedOption.label : this.placeholder;
 
         return html`
-            <div class="custom-select">
+            <div class="custom-select" style="position: relative; z-index: 5;">
                 <button
                     class="select-button"
                     role="combobox"
@@ -169,6 +181,7 @@ export class DbSelect extends LitElement {
                     id="select-dropdown"
                     aria-label="Available database types"
                     @keydown="${this.handleKeyDown}"
+                    style="${this.isOpen ? 'display: block; z-index: 1000;' : ''}"
                 >
                     ${this.options.map((option, index) => html`
                         <li 

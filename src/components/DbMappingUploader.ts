@@ -188,17 +188,7 @@ export class DbMappingUploader extends LitElement {
   @state()
   private showMappingVisualization = false;
 
-  /**
-   * Validated mapping data for display
-   */
-  @state()
-  private validatedMapping = null;
 
-  /**
-   * Flag to indicate if the mapping has been validated
-   */
-  @state()
-  private isValidated = false;
 
   /**
    * Upload progress percentage
@@ -248,10 +238,7 @@ export class DbMappingUploader extends LitElement {
             this.handleMappingChange(event);
           });
 
-          // Listen for validation events
-          visualizer.addEventListener('validate-mapping', (event: any) => {
-            this.handleValidateMapping(event);
-          });
+
         }
       }, 1500);
     });
@@ -265,7 +252,7 @@ export class DbMappingUploader extends LitElement {
     const fileInput = this.shadowRoot?.querySelector('db-file-input');
     if (fileInput) {
       console.log('Setting up file input event listeners');
-      
+
       // Listen for upload progress events
       fileInput.addEventListener('upload-progress', ((event: Event) => {
         console.log('Upload progress event received');
@@ -279,7 +266,7 @@ export class DbMappingUploader extends LitElement {
         const customEvent = event as CustomEvent;
         this.handleFileUploadComplete(customEvent);
       }) as EventListener);
-      
+
       // Log that listeners were added successfully
       this.logEvent('info', 'File input event listeners set up successfully');
     } else {
@@ -316,7 +303,7 @@ export class DbMappingUploader extends LitElement {
 
     // Log the progress event
     this.logEvent('upload-progress', `${file.name}: ${progress}%`);
-    
+
     // Force update to ensure the UI reflects the current progress
     this.requestUpdate();
   }
@@ -334,7 +321,7 @@ export class DbMappingUploader extends LitElement {
 
     // Store the current file for API calls
     this.currentFile = file;
-    
+
     // Set the fileLoaded flag to true when upload is complete
     this.fileLoaded = true;
 
@@ -348,19 +335,7 @@ export class DbMappingUploader extends LitElement {
     }, 1000);
   }
 
-  /**
-   * Handle validate mapping events
-   */
-  private handleValidateMapping(event: any) {
-    const mapping = event.detail.mapping;
-    this.validatedMapping = mapping;
-    this.isValidated = true;
-    this.logEvent('validate-mapping', 'Mapping validated', 'success');
-    console.log('Validated mapping:', mapping);
 
-    // Force re-render to show the validated mapping
-    this.requestUpdate();
-  }
 
   /**
    * Handles the file selection event
@@ -447,7 +422,7 @@ export class DbMappingUploader extends LitElement {
       currentFile: this.currentFile,
       fileLoaded: this.fileLoaded
     });
-    
+
     // Check if schema data is available
     if (!this.schemaData) {
       return {
@@ -472,7 +447,7 @@ export class DbMappingUploader extends LitElement {
    */
   private fetchMappingFromApi() {
     console.log('fetchMappingFromApi called');
-    
+
     // Validate requirements before making API call
     const validation = this.validateApiRequirements();
     if (!validation.isValid) {
@@ -632,8 +607,7 @@ export class DbMappingUploader extends LitElement {
     this.errorMessage = '';
     this.uploadProgress = 0;
     this.currentFile = null;
-    this.validatedMapping = null;
-    this.isValidated = false;
+
 
     // Reset the file input by recreating it
     if (this.fileInput) {
@@ -692,6 +666,7 @@ export class DbMappingUploader extends LitElement {
           </div>
         </div>
         
+
         <!-- Mapping Visualizer Section - Only shown when file is loaded successfully and visualization is ready -->
         ${this.fileLoaded && this.showMappingVisualization ? html`
           <div class="section visualizer-container">
@@ -716,16 +691,6 @@ export class DbMappingUploader extends LitElement {
                       <p>No mapping data available. Upload a mapping file or wait for API response.</p>
                     </div>`
         }
-              
-              <!-- Display validated mapping data when available -->
-              ${this.isValidated && this.validatedMapping ? html`
-                <div class="mapping-output" role="region" aria-labelledby="validated-mapping-heading">
-                  <h5 id="validated-mapping-heading">${this.isValidated ? 'Validated Mapping Output:' : 'Current Mapping:'}</h5>
-                  <pre aria-live="polite" role="status" class="mapping-json">
-                    ${JSON.stringify(this.validatedMapping, null, 2)}
-                  </pre>
-                </div>
-              ` : ''}
             </div>
           </div>
         ` : ''}

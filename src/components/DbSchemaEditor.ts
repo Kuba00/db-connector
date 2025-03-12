@@ -59,29 +59,7 @@ export class DbSchemaEditor extends LitElement {
       font-size: 14px;
     }
     
-    .schema-preview {
-      margin-top: 15px;
-      padding: 15px;
-    }
-    
-    .schema-preview h4 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      font-size: 1rem;
-      color: #333;
-    }
-    
-    .schema-json {
-      overflow: auto;
-      max-height: 200px;
-      padding: 10px;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 0.85rem;
-      white-space: pre-wrap;
-    }
+
     
     .template-selector {
       margin-bottom: 15px;
@@ -126,11 +104,7 @@ export class DbSchemaEditor extends LitElement {
   @state()
   private errorMessage = '';
 
-  /**
-   * Flag to show schema preview
-   */
-  @state()
-  private showPreview = false;
+
   
 
 
@@ -154,7 +128,7 @@ export class DbSchemaEditor extends LitElement {
       if (this.schemaText.trim()) {
         const schema = JSON.parse(this.schemaText);
         this.schemaData = schema;
-        this.showPreview = true;
+
         
         // Dispatch an event with the schema data
         this.dispatchEvent(new CustomEvent('schema-updated', {
@@ -162,12 +136,9 @@ export class DbSchemaEditor extends LitElement {
           bubbles: true,
           composed: true
         }));
-      } else {
-        this.showPreview = false;
       }
     } catch (error: any) {
       this.errorMessage = `Error parsing schema: ${error.message}`;
-      this.showPreview = false;
     }
   }
 
@@ -181,7 +152,6 @@ export class DbSchemaEditor extends LitElement {
   private clearSchema() {
     this.schemaText = '';
     this.errorMessage = '';
-    this.showPreview = false;
   }
   
 
@@ -215,12 +185,7 @@ export class DbSchemaEditor extends LitElement {
           </div>
         ` : ''}
         
-        ${this.showPreview && this.schemaData ? html`
-          <div class="schema-preview" role="region" aria-labelledby="schema-preview-heading">
-            <h4 id="schema-preview-heading">Schema Preview:</h4>
-            <pre class="schema-json">${JSON.stringify(this.schemaData, null, 2)}</pre>
-          </div>
-        ` : ''}
+
       </div>
     `;
   }

@@ -87,6 +87,55 @@ export class DbMappingVisualizer extends LitElement {
   }
 
   /**
+   * Get all unique target fields from the mapping data
+   */
+  private getAllTargetFields(): string[] {
+    const targetFields = new Set<string>();
+    
+    // Extract all target fields from all tables
+    this.mappingData.tables.forEach(table => {
+      table.header_mapping.forEach(mapping => {
+        if (mapping.target_field) {
+          targetFields.add(mapping.target_field);
+        }
+      });
+    });
+    
+    return Array.from(targetFields);
+  }
+
+  /**
+   * Generate options for the target field select
+   * Ensures no duplicate options are included and sorts them alphabetically
+   */
+  private generateTargetFieldOptions(currentValue: string): {value: string, label: string}[] {
+    // Get all unique target fields
+    const allTargetFields = this.getAllTargetFields();
+    
+    // Create options array with the current value first
+    const options = [
+      { value: currentValue, label: currentValue }
+    ];
+    
+    // Get all other fields (excluding current value) and sort them alphabetically
+    const otherFields = allTargetFields
+      .filter(field => field !== currentValue)
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+    
+    // Add the sorted fields to the options
+    otherFields.forEach(field => {
+      options.push({ value: field, label: field });
+    });
+    
+    // Ensure no duplicates by using a Set and reconstructing the array
+    const uniqueOptions = Array.from(
+      new Map(options.map(item => [item.value, item])).values()
+    );
+    
+    return uniqueOptions;
+  }
+
+  /**
    * Handle target field change
    */
   private handleTargetChange(event: Event, tableIndex: number, sourceField: string) {
@@ -161,16 +210,7 @@ export class DbMappingVisualizer extends LitElement {
                           <strong>Target: </strong>
                           <db-select 
                             id="target-select-${index}-${mapping.source_field}"
-                            .options=${[
-                              { value: mapping.target_field, label: mapping.target_field },
-                              { value: 'customer_id', label: 'customer_id' },
-                              { value: 'transaction_id', label: 'transaction_id' },
-                              { value: 'purchase_date', label: 'purchase_date' },
-                              { value: 'contact_number', label: 'contact_number' },
-                              { value: 'customer_name', label: 'customer_name' }
-                            ].filter((option, idx, self) => 
-                              idx === self.findIndex((t) => t.value === option.value)
-                            )}
+                            .options=${this.generateTargetFieldOptions(mapping.target_field)}
                             value="${mapping.target_field}"
                             @change="${(e: Event) => this.handleTargetChange(e, index, mapping.source_field)}"
                           ></db-select>

@@ -9,18 +9,59 @@
   <link rel="stylesheet" href="./src/index.css" />
   <script type="module" src="./src/index.ts"></script>
 </head>
-<main role="main" id="content">
-  <section id="mapping-visualization" class="mt-8">
-    <h2>Database Mapping</h2>
-    <p>Review and configure the mapping between source and target fields.</p>
 
-    <!-- Mapping tables will be dynamically generated here -->
-    <div id="mapping-tables-container" style="margin:1rem;">
-      <!-- Tables will be inserted here via JavaScript -->
-    </div>
-  </section>
-</main>
+<body>
+  <!-- Quick access links for accessibility -->
+  <ul class="lar" aria-label="Quick access links">
+    <li><a href="#header">Header</a></li>
+    <li><a href="#content">Main content</a></li>
+  </ul>
 
+  <header role="banner" id="header">
+    <h1>Database Connector</h1>
+  </header>
+
+  <main role="main" id="content">
+    <section id="mapping-visualization" class="mt-8">
+      <h2>Database Mapping</h2>
+      <p>Review and configure the mapping between source and target fields.</p>
+
+      <!-- Using the db-mapping-visualizer component with a JSON object prop -->
+      <db-mapping-visualizer id="mapping-visualizer"></db-mapping-visualizer>
+    </section>
+  </main>
+
+  <script>
+    // Fetch the mapping data from the JSON file
+    document.addEventListener('DOMContentLoaded', () => {
+      const visualizer = document.getElementById('mapping-visualizer');
+      
+      // Fetch the mapping data from the JSON file
+      fetch('./src/data/mapping.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (visualizer) {
+            // Set the mapping data as an attribute using the fetched data
+            visualizer.setAttribute('mapping-data', JSON.stringify(data));
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching mapping data:', error);
+          // Provide a fallback or error message to the user
+          if (visualizer) {
+            visualizer.innerHTML = `<div role="alert" aria-live="assertive">
+              <h3>Error Loading Mapping Data</h3>
+              <p>Unable to load mapping data. Please try again later or contact support.</p>
+            </div>`;
+          }
+        });
+    });
+  </script>
 </body>
 
 </html>

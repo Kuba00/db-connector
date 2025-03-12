@@ -6,6 +6,4 @@ import '@/components/DbCollapse';
 import '@/components/DbSelect';
 import '@/components/DbInput';
 import '@/components/DbButton';
-
-// Import the mapping visualizer
-import './mapping-visualizer';
+import '@/components/DbMappingVisualizer';

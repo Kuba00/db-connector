@@ -12,7 +12,7 @@
     .demo-container {
       max-width: 1500px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 10px;
     }
 
     .demo-item {
@@ -22,68 +22,6 @@
       border-radius: 8px;
       background-color: #f9f9f9;
     }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-      margin-bottom: 15px;
-    }
-
-    .progress-info {
-      font-weight: 500;
-      margin-top: 10px;
-      color: #555;
-    }
-
-    h3 {
-      margin-top: 0;
-      margin-bottom: 15px;
-      color: #333;
-    }
-
-    section {
-      margin-bottom: 40px;
-    }
-
-    .event-log {
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      padding: 10px;
-      background-color: #f8f9fa;
-      font-family: monospace;
-      font-size: 0.85rem;
-      margin-top: 10px;
-    }
-
-    .log-item {
-      padding: 4px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .log-item:last-child {
-      border-bottom: none;
-    }
-
-    .log-item .timestamp {
-      color: #666;
-      margin-right: 8px;
-    }
-
-    .log-item .event-type {
-      font-weight: bold;
-      color: #03b5d2;
-    }
-
-    .log-item.success .event-type {
-      color: #28a745;
-    }
-
-    .log-item.error .event-type {
-      color: #dc3545;
-    }
   </style>
 </head>
 
@@ -91,10 +29,24 @@
   <main role="main" id="contenu">
     <div class="demo-container">
       <!-- File Input and Mapping Uploader Demo Section -->
-      <section id="file-input-demo" class="mt-8" aria-labelledby="file-input-heading">
+      <section id="database-schema-section" class="mt-8" aria-labelledby="schema-heading">
         <div class="demo-container">
           <div class="demo-item">
+            <!-- Database Schema Editor Component -->
+            <db-schema-editor id="demo-schema-editor" title="Database Schema Definition"
+              aria-labelledby="schema-heading">
+            </db-schema-editor>
+          </div>
+        </div>
+      </section>
 
+      <section id="file-input-demo" aria-labelledby="mapping-heading">
+        <div class="demo-container">
+          <div class="demo-item">
+            <h3 id="mapping-heading">Database Mapping</h3>
+            <p>Upload your data file to map it to the defined schema</p>
+
+            <!-- Database Mapping Uploader Component -->
             <div style="flex: 1; min-width: 300px;">
               <db-mapping-uploader id="demo-mapping-uploader" accept=".json,.csv,.xlsx"
                 title="Database Mapping Uploader" label="Drag & Drop your mapping file here"

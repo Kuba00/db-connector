@@ -9,3 +9,4 @@ import '@/components/DbMappingVisualizer';
 import '@/components/DbProgressBar';
 import '@/components/DbFileInput';
 import '@/components/DbMappingUploader';
+import '@/components/DbSchemaEditor';

@@ -10,7 +10,7 @@
   <script type="module" src="./src/index.ts"></script>
   <style>
     .demo-container {
-      max-width: 1200px;
+      max-width: 1500px;
       margin: 0 auto;
       padding: 20px;
     }
@@ -45,21 +45,60 @@
     section {
       margin-bottom: 40px;
     }
+    
+    .event-log {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 10px;
+      background-color: #f8f9fa;
+      font-family: monospace;
+      font-size: 0.85rem;
+      margin-top: 10px;
+    }
+    
+    .log-item {
+      padding: 4px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .log-item:last-child {
+      border-bottom: none;
+    }
+    
+    .log-item .timestamp {
+      color: #666;
+      margin-right: 8px;
+    }
+    
+    .log-item .event-type {
+      font-weight: bold;
+      color: #03b5d2;
+    }
+    
+    .log-item.success .event-type {
+      color: #28a745;
+    }
+    
+    .log-item.error .event-type {
+      color: #dc3545;
+    }
   </style>
 </head>
 
 <body>
   <!-- Quick access links for accessibility -->
-  <ul class="lar" aria-label="Quick access links">
-    <li><a href="#header">Header</a></li>
-    <li><a href="#content">Main content</a></li>
+  <ul class="lar" aria-label="Liens d'accès rapide">
+    <li><a href="#en_tete">En-tête</a></li>
+    <li><a href="#contenu">Contenu principal</a></li>
   </ul>
 
-  <header role="banner" id="header">
+  <header role="banner" id="en_tete">
     <h1>Database Connector</h1>
   </header>
 
-  <main role="main" id="content">
+  <main role="main" id="contenu">
     <!-- Progress Bar Demo Section -->
     <section id="progress-bar-demo" class="mt-8" aria-labelledby="progress-bar-heading">
       <h2 id="progress-bar-heading">Progress Bar Component</h2>
@@ -108,13 +147,53 @@
       </div>
     </section>
 
-    <!-- Mapping Visualizer Section -->
-    <section id="mapping-visualization" class="mt-8" aria-labelledby="mapping-heading">
-      <h2 id="mapping-heading">Database Mapping</h2>
-      <p>Review and configure the mapping between source and target fields.</p>
+    <div class="demo-container">
+      <div class="demo-item">
+        <!-- Mapping Visualizer Section -->
+        <section id="mapping-visualization" class="mt-8" aria-labelledby="mapping-heading">
 
-      <!-- Using the db-mapping-visualizer component with a JSON object prop -->
-      <db-mapping-visualizer id="mapping-visualizer"></db-mapping-visualizer>
+          <!-- Using the db-mapping-visualizer component with a JSON object prop -->
+          <db-mapping-visualizer id="mapping-visualizer"></db-mapping-visualizer>
+        </section>
+      </div>
+    </div>
+
+    <!-- File Input Demo Section -->
+    <section id="file-input-demo" class="mt-8" aria-labelledby="file-input-heading">
+      <div class="demo-container">
+        <div class="demo-item">
+          <h2 id="file-input-heading">File Input Component</h2>
+          <p>Test and interact with the DbFileInput component with upload progress tracking.</p>
+          
+          <!-- Basic File Input -->
+          <div class="demo-item">
+            <h3 id="basic-file-input-heading">File Upload with Progress</h3>
+            <p>Drag and drop files or click to browse your device. Watch the upload progress in real-time.</p>
+            
+            <db-file-input 
+              id="demo-file-input"
+              accept=".jpg,.jpeg,.png,.pdf,.docx,.txt"
+              multiple
+              label="Drag & Drop your files here"
+              sublabel="or click to browse"
+              aria-label="File upload area">
+            </db-file-input>
+            
+            <div class="controls" role="group" aria-label="File input controls">
+              <db-button id="clear-files">Clear All Files</db-button>
+            </div>
+            
+            <div id="file-list" class="mt-4" aria-live="polite" role="region" aria-label="Uploaded files status">
+              <p>No files selected</p>
+            </div>
+            
+            <div id="upload-events" class="mt-4" aria-live="polite">
+              <h4>Upload Events</h4>
+              <div id="event-log" class="event-log" tabindex="0" role="log" aria-label="Upload event log"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -249,6 +328,89 @@
             </div>`;
           }
         });
+    });
+
+    // File Input Component Demo
+    document.addEventListener('DOMContentLoaded', () => {
+      const fileInput = document.getElementById('demo-file-input');
+      const fileList = document.getElementById('file-list');
+      const clearButton = document.getElementById('clear-files');
+      const eventLog = document.getElementById('event-log');
+      
+      if (fileInput) {
+        // Listen for files-selected events
+        fileInput.addEventListener('files-selected', (event) => {
+          const files = event.detail.files;
+          
+          // Log the event
+          logEvent('files-selected', `${files.length} file(s) selected`);
+          
+          // Update the file list
+          if (fileList) {
+            fileList.innerHTML = '';
+            
+            if (files.length === 0) {
+              fileList.innerHTML = '<p>No files selected</p>';
+            } else {
+              const list = document.createElement('ul');
+              list.setAttribute('role', 'list');
+              list.setAttribute('aria-label', 'Selected files');
+              
+              files.forEach(file => {
+                const item = document.createElement('li');
+                item.textContent = `${file.name} (${formatFileSize(file.size)})`;
+                list.appendChild(item);
+              });
+              
+              fileList.appendChild(list);
+            }
+          }
+        });
+        
+        // Listen for upload progress events
+        fileInput.addEventListener('upload-progress', (event) => {
+          const { file, progress } = event.detail;
+          logEvent('upload-progress', `${file.name}: ${progress}%`);
+        });
+        
+        // Listen for upload complete events
+        fileInput.addEventListener('upload-complete', (event) => {
+          const { file } = event.detail;
+          logEvent('upload-complete', `${file.name} uploaded successfully`, 'success');
+        });
+      }
+      
+      // Clear files button
+      if (clearButton && fileInput) {
+        clearButton.addEventListener('click', () => {
+          fileInput.clearFiles();
+          logEvent('clear-files', 'All files cleared');
+        });
+      }
+      
+      // Log events to the event log
+      function logEvent(eventType, message, type = 'info') {
+        if (!eventLog) return;
+        
+        const timestamp = new Date().toLocaleTimeString();
+        const logItem = document.createElement('div');
+        logItem.className = `log-item ${type}`;
+        logItem.innerHTML = `<span class="timestamp">${timestamp}</span> <span class="event-type">${eventType}</span>: ${message}`;
+        
+        eventLog.appendChild(logItem);
+        eventLog.scrollTop = eventLog.scrollHeight; // Auto-scroll to bottom
+      }
+      
+      // Format file size helper function
+      function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
     });
   </script>
 </body>

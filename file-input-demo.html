@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DB File Input Demo</title>
+  <link rel="stylesheet" href="./src/index.css" />
+  <script type="module" src="./src/index.ts"></script>
+  <style>
+    body {
+      font-family: 'Hind', sans-serif;
+      background: #fff;
+      color: #4d5974;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      margin: 0 auto;
+      padding: 4rem;
+      max-width: 48rem;
+    }
+    
+    h1 {
+      margin-bottom: 2rem;
+    }
+    
+    .demo-section {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    
+    .demo-controls {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+    
+    button.demo-btn {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      background: #03b5d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    button.demo-btn:hover {
+      background: #028ea6;
+    }
+    
+    .status-log {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    .log-entry {
+      margin-bottom: 0.5rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    
+    .option-group {
+      margin-bottom: 1rem;
+    }
+    
+    .option-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .option-group input[type="text"],
+    .option-group input[type="number"] {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+      font-size: 1rem;
+    }
+    
+    .option-group input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Quick access links for accessibility -->
+  <ul class="lar" aria-label="Liens d'accès rapide">
+    <li><a href="#en_tete">En-tête</a></li>
+    <li><a href="#contenu">Contenu principal</a></li>
+  </ul>
+
+  <header role="banner" id="en_tete">
+    <h1>DB File Input Component Demo</h1>
+  </header>
+
+  <main role="main" id="contenu">
+    <div class="container">
+      <section class="demo-section" aria-labelledby="basic-heading">
+        <h2 id="basic-heading">Basic File Input</h2>
+        <p>This demonstrates the basic file input drag and drop functionality.</p>
+        
+        <db-file-input 
+          id="basic-file-input"
+          label="Drag & Drop your files here"
+          sublabel="or click to browse"
+          aria-label="File upload area">
+        </db-file-input>
+      </section>
+      
+      <section class="demo-section" aria-labelledby="image-heading">
+        <h2 id="image-heading">Image Upload</h2>
+        <p>This file input only accepts image files (JPG, PNG, GIF).</p>
+        
+        <db-file-input 
+          id="image-file-input"
+          accept=".jpg,.jpeg,.png,.gif"
+          label="Drop your images here"
+          sublabel="or click to browse"
+          aria-label="Image upload area">
+        </db-file-input>
+      </section>
+      
+      <section class="demo-section" aria-labelledby="multiple-heading">
+        <h2 id="multiple-heading">Multiple File Upload</h2>
+        <p>This file input allows selecting multiple files at once.</p>
+        
+        <db-file-input 
+          id="multiple-file-input"
+          multiple
+          label="Drop multiple files here"
+          sublabel="or click to browse"
+          aria-label="Multiple file upload area">
+        </db-file-input>
+      </section>
+      
+      <section class="demo-section" aria-labelledby="custom-heading">
+        <h2 id="custom-heading">Customizable File Input</h2>
+        <p>Customize the file input with different options.</p>
+        
+        <div class="demo-controls">
+          <div class="option-group">
+            <label for="accept-input">Accepted File Types (comma-separated, e.g., .jpg,.pdf)</label>
+            <input type="text" id="accept-input" value=".pdf,.docx,.txt">
+          </div>
+          
+          <div class="option-group">
+            <label for="max-size-input">Max File Size (bytes)</label>
+            <input type="number" id="max-size-input" value="2097152">
+          </div>
+          
+          <div class="option-group">
+            <label for="label-input">Main Label</label>
+            <input type="text" id="label-input" value="Drop your documents here">
+          </div>
+          
+          <div class="option-group">
+            <label for="sublabel-input">Sub Label</label>
+            <input type="text" id="sublabel-input" value="or select files">
+          </div>
+          
+          <div class="option-group">
+            <input type="checkbox" id="multiple-input" checked>
+            <label for="multiple-input">Allow Multiple Files</label>
+          </div>
+          
+          <button class="demo-btn" id="apply-settings">Apply Settings</button>
+          <button class="demo-btn" id="clear-files">Clear Files</button>
+        </div>
+        
+        <db-file-input 
+          id="custom-file-input"
+          accept=".pdf,.docx,.txt"
+          multiple
+          max-size="2097152"
+          label="Drop your documents here"
+          sublabel="or select files"
+          aria-label="Custom file upload area">
+        </db-file-input>
+      </section>
+      
+      <section class="demo-section" aria-labelledby="events-heading">
+        <h2 id="events-heading">Event Logging</h2>
+        <p>This section shows events from all file inputs on this page.</p>
+        
+        <div class="status-log" id="event-log">
+          <div class="log-entry">Event log will appear here...</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const eventLog = document.getElementById('event-log');
+      const customFileInput = document.getElementById('custom-file-input');
+      
+      // Clear initial message
+      eventLog.innerHTML = '';
+      
+      // Add log entry function
+      function logEvent(message) {
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+        eventLog.appendChild(entry);
+        eventLog.scrollTop = eventLog.scrollHeight;
+        
+        // Keep only the last 10 entries
+        while (eventLog.children.length > 10) {
+          eventLog.removeChild(eventLog.firstChild);
+        }
+      }
+      
+      // Listen for files-selected events from all file inputs
+      document.addEventListener('files-selected', (event) => {
+        const detail = event.detail;
+        const fileNames = detail.files.map(file => file.name).join(', ');
+        const sourceId = event.target.id;
+        logEvent(`Files selected from ${sourceId}: ${fileNames || 'none'}`);
+      });
+      
+      // Apply custom settings
+      document.getElementById('apply-settings').addEventListener('click', () => {
+        const acceptInput = document.getElementById('accept-input').value;
+        const maxSizeInput = parseInt(document.getElementById('max-size-input').value, 10);
+        const labelInput = document.getElementById('label-input').value;
+        const sublabelInput = document.getElementById('sublabel-input').value;
+        const multipleInput = document.getElementById('multiple-input').checked;
+        
+        customFileInput.accept = acceptInput;
+        customFileInput.maxSize = maxSizeInput;
+        customFileInput.label = labelInput;
+        customFileInput.sublabel = sublabelInput;
+        customFileInput.multiple = multipleInput;
+        
+        logEvent('Applied custom settings to file input');
+      });
+      
+      // Clear files button
+      document.getElementById('clear-files').addEventListener('click', () => {
+        customFileInput.clearFiles();
+        logEvent('Cleared files from custom file input');
+      });
+    });
+  </script>
+</body>
+</html>

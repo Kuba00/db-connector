@@ -1,0 +1,222 @@
+// File input component styles
+.file-input-container {
+  font-family: 'Hind', sans-serif;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+
+  // Hide the native file input
+  input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  // Drop zone styles
+  .drop-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border: 2px dashed #ccc;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    min-height: 150px;
+
+    &:hover, &:focus {
+      border-color: #03b5d2;
+      background-color: rgba(3, 181, 210, 0.05);
+      outline: none;
+    }
+
+    &.dragging {
+      border-color: #03b5d2;
+      background-color: rgba(3, 181, 210, 0.1);
+    }
+
+    .drop-zone-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      
+      .icon {
+        margin-bottom: 1rem;
+        
+        svg {
+          width: 48px;
+          height: 48px;
+          color: #03b5d2;
+        }
+      }
+      
+      .text {
+        .primary {
+          font-size: 1.25rem;
+          font-weight: 500;
+          margin: 0 0 0.5rem 0;
+          color: #4d5974;
+        }
+        
+        .secondary {
+          font-size: 1rem;
+          margin: 0;
+          color: #6c757d;
+        }
+      }
+    }
+  }
+
+  // Error message styles
+  .error-message {
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  // File list styles
+  .file-list {
+    margin-top: 1rem;
+    
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+      
+      .file-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        flex: 1;
+        margin-right: 0.75rem;
+        
+        .file-name {
+          font-weight: 500;
+          color: #4d5974;
+          margin-bottom: 0.25rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        .file-size {
+          font-size: 0.75rem;
+          color: #6c757d;
+        }
+      }
+      
+      // Progress bar styles
+      .file-progress {
+        flex: 2;
+        margin-right: 0.75rem;
+        
+        .progress-container {
+          width: 100%;
+          height: 8px;
+          background-color: #e0e0e0;
+          border-radius: 4px;
+          overflow: hidden;
+          margin-bottom: 4px;
+        }
+        
+        .progress-bar {
+          height: 100%;
+          background-color: #03b5d2;
+          border-radius: 4px;
+          transition: width 0.3s ease;
+          
+          &.complete {
+            background-color: #28a745;
+          }
+          
+          &.error {
+            background-color: #dc3545;
+          }
+        }
+        
+        .progress-text {
+          font-size: 0.75rem;
+          color: #6c757d;
+          display: block;
+        }
+      }
+      
+      .remove-file {
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+        
+        &:hover, &:focus {
+          color: #dc3545;
+          background-color: rgba(220, 53, 69, 0.1);
+          outline: none;
+        }
+      }
+    }
+  }
+}
+
+// Accessibility focus styles
+:host(:focus-within) .drop-zone {
+  border-color: #03b5d2;
+  box-shadow: 0 0 0 0.2rem rgba(3, 181, 210, 0.25);
+  outline: none;
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+  .file-input-container {
+    .drop-zone {
+      padding: 1.5rem;
+      min-height: 120px;
+      
+      .drop-zone-content {
+        .icon svg {
+          width: 36px;
+          height: 36px;
+        }
+        
+        .text {
+          .primary {
+            font-size: 1rem;
+          }
+          
+          .secondary {
+            font-size: 0.875rem;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,43 +1,78 @@
 .collapse {
     margin-bottom: 1em;
+    border-bottom: 1px solid #969393;
 
     .handle {
         margin: 0;
-        font-size: 16px;
+        font-size: 1.15rem;
 
         button {
-            width: 100%;
-            color: #fff;
-            cursor: pointer;
-            font-weight: normal;
-            padding: 10px;
-            background: #9e9a9a;
-            user-select: none;
-            border: none;
+            position: relative;
+            display: block;
             text-align: left;
-            display: flex;
-            align-items: center;
+            width: 100%;
+            padding: 1em 0;
+            color: #7288a2;
+            font-weight: 400;
+            border: none;
+            background: none;
+            outline: none;
+            cursor: pointer;
 
             &:hover,
             &:focus {
-                background: #252525;
-                outline: 2px solid #fff;
-                outline-offset: -2px;
+                color: #03b5d2;
             }
 
-            &:before {
-                font-family: FontAwesome;
-                content: "\f107";
+            &.expanded {
+                color: #040404;
+                border-bottom: 1px solid #040404;
+            }
+
+            .title-text {
+                padding: 1em 1.5em 1em 0;
+            }
+
+            .icon {
                 display: inline-block;
-                margin-right: 10px;
-                font-size: 1em;
-                line-height: 1.556em;
-                vertical-align: middle;
-                transition: transform 0.5s;
+                position: absolute;
+                top: 18px;
+                right: 0;
+                width: 22px;
+                height: 22px;
+                border: 1px solid;
+                border-radius: 22px;
+
+                &::before {
+                    display: block;
+                    position: absolute;
+                    content: '';
+                    top: 9px;
+                    left: 5px;
+                    width: 10px;
+                    height: 2px;
+                    background: currentColor;
+                }
+
+                &::after {
+                    display: block;
+                    position: absolute;
+                    content: '';
+                    top: 5px;
+                    left: 9px;
+                    width: 2px;
+                    height: 10px;
+                    background: currentColor;
+                }
             }
 
-            &.expanded:before {
-                transform: rotate(180deg);
+            &.expanded .icon::after {
+                width: 0;
+            }
+
+            &:hover .icon,
+            &:focus .icon {
+                border-color: #070707;
             }
         }
     }
@@ -45,19 +80,27 @@
     .content {
         width: 100%;
         margin: 0 auto;
-        background: #fff;
         overflow: hidden;
-        height: 0;
         opacity: 0;
-        transition: height 0.5s ease, opacity 0.5s ease;
-        box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
+        max-height: 0;
+        transition: opacity 200ms linear, max-height 200ms linear;
+        will-change: opacity, max-height;
 
         &.expanded {
             opacity: 1;
+            max-height: 9em;
+            /* This will be overridden by JS */
+            transition: all 200ms linear;
         }
 
         .content-inner {
-            padding: 10px;
+            padding: 0 0 1em 0;
+            font-size: 1rem;
+            font-weight: 300;
+
+            p {
+                margin: 2em 0;
+            }
         }
 
         /* Ensure focus outline is visible when tabbing through content */
@@ -66,7 +109,7 @@
         input:focus,
         select:focus,
         textarea:focus {
-            outline: 2px solid #06c;
+            outline: 2px solid #212121;
             outline-offset: 2px;
         }
     }

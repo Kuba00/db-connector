@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DB Collapse Demo</title>
+  <link rel="stylesheet" href="./src/index.css" />
+  <script type="module" src="./src/index.ts"></script>
+  <style>
+    body {
+      font-family: 'Hind', sans-serif;
+      background: #fff;
+      color: #4d5974;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      margin: 0 auto;
+      padding: 4rem;
+      max-width: 48rem;
+    }
+    
+    h1 {
+      margin-bottom: 2rem;
+    }
+    
+    .demo-section {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    
+    .demo-controls {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+    
+    button.demo-btn {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      background: #03b5d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    button.demo-btn:hover {
+      background: #028ea6;
+    }
+    
+    .status-log {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    .log-entry {
+      margin-bottom: 0.5rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Quick access links for accessibility -->
+  <ul class="lar" aria-label="Liens d'accès rapide">
+    <li><a href="#header">En-tête</a></li>
+    <li><a href="#content">Contenu principal</a></li>
+  </ul>
+
+  <header role="banner" id="header">
+    <h1>DB Collapse Component Demo</h1>
+  </header>
+
+  <main role="main" id="content">
+    <div class="container">
+      <section class="demo-section" aria-labelledby="faq-heading">
+        <h2 id="faq-heading">Frequently Asked Questions (Accordion Style)</h2>
+        <p>This demonstrates the accordion behavior where only one collapse can be open at a time. All collapses in this section share the same group: "faq".</p>
+        
+        <db-collapse 
+          id="collapse-1" 
+          title="Why is the moon sometimes out during the day?" 
+          aria-label="Moon question"
+          group="faq">
+          <p>
+            The moon is visible during daylight hours because it reflects sunlight and can be bright enough 
+            to be seen against the blue sky. The moon orbits Earth every 27.3 days and is visible during 
+            the day for about half of its orbit when it's positioned in the right part of the sky relative 
+            to the sun and Earth.
+          </p>
+        </db-collapse>
+        
+        <db-collapse 
+          id="collapse-2" 
+          title="Why is the sky blue?" 
+          aria-label="Sky question"
+          group="faq">
+          <p>
+            The sky appears blue because air molecules scatter sunlight in all directions. Blue light is 
+            scattered more than other colors because it travels as shorter, smaller waves. This is why 
+            we see a blue sky most of the time when looking up during the day.
+          </p>
+        </db-collapse>
+        
+        <db-collapse 
+          id="collapse-3" 
+          title="Will we ever discover aliens?" 
+          aria-label="Aliens question"
+          group="faq">
+          <p>
+            The possibility of discovering extraterrestrial life depends on many factors. With billions 
+            of galaxies containing billions of stars with planets, many scientists believe the probability 
+            of life existing elsewhere is high. However, the vast distances between stars make detection 
+            and communication challenging. Current and future space missions and telescopes continue to 
+            search for signs of life beyond Earth.
+          </p>
+        </db-collapse>
+        
+        <db-collapse 
+          id="collapse-4" 
+          title="How much does the Earth weigh?" 
+          aria-label="Earth weight question"
+          group="faq">
+          <p>
+            The Earth weighs approximately 5.972 × 10^24 kg (about 6 sextillion tons). This mass includes 
+            the planet's core, mantle, crust, oceans, and atmosphere. Scientists determined this through 
+            gravitational measurements and calculations based on the Earth's density and volume.
+          </p>
+        </db-collapse>
+        
+        <db-collapse 
+          id="collapse-5" 
+          title="How do airplanes stay up?" 
+          expanded="true"
+          aria-label="Airplane question"
+          group="faq">
+          <p>
+            Airplanes stay in the air due to four forces: lift, weight, thrust, and drag. The shape of 
+            airplane wings creates lift as air flows over and under them. The curved top surface causes 
+            air to move faster over the top, creating lower pressure above the wing than below it. This 
+            pressure difference generates lift that counteracts the airplane's weight. Engines provide 
+            thrust to overcome drag (air resistance), allowing the plane to move forward and maintain lift.
+          </p>
+        </db-collapse>
+      </section>
+      
+      <section class="demo-section" aria-labelledby="second-accordion-heading">
+        <h2 id="second-accordion-heading">Second Accordion Group</h2>
+        <p>This is another accordion group. Collapses in this group will work together, but independently from the FAQ group above.</p>
+        
+        <db-collapse 
+          id="second-1" 
+          title="How to use this component" 
+          aria-label="Usage instructions"
+          group="second-group">
+          <p>
+            To use the DbCollapse component, import it from the components directory and add it to your HTML with the 
+            appropriate attributes. Set the 'group' attribute to create accordion behavior between multiple collapses.
+          </p>
+          <pre><code>&lt;db-collapse 
+  id="my-collapse" 
+  title="My Title" 
+  group="my-group"&gt;
+  Content goes here...
+&lt;/db-collapse&gt;</code></pre>
+        </db-collapse>
+        
+        <db-collapse 
+          id="second-2" 
+          title="Accessibility features" 
+          aria-label="Accessibility information"
+          group="second-group">
+          <p>
+            The DbCollapse component includes several accessibility features:
+          </p>
+          <ul>
+            <li>Proper ARIA attributes for screen readers</li>
+            <li>Keyboard navigation support</li>
+            <li>Focus management</li>
+            <li>High contrast visual indicators</li>
+          </ul>
+        </db-collapse>
+        
+        <db-collapse 
+          id="second-3" 
+          title="Styling options" 
+          aria-label="Styling information"
+          group="second-group">
+          <p>
+            The component can be styled using CSS variables or by extending the base styles. The default 
+            theme uses a clean, modern design with smooth transitions and clear visual indicators for 
+            the expanded state.
+          </p>
+        </db-collapse>
+      </section>
+      
+      <section class="demo-section" aria-labelledby="independent-heading">
+        <h2 id="independent-heading">Independent Collapses</h2>
+        <p>These collapses operate independently and can be open simultaneously because they have different group names.</p>
+        
+        <db-collapse 
+          id="independent-1" 
+          title="Section 1: Project Overview" 
+          aria-label="Project overview section"
+          group="independent-1">
+          <p>
+            This project aims to create reusable web components using Lit Element. The components 
+            follow accessibility guidelines and provide a consistent user experience across different 
+            applications.
+          </p>
+        </db-collapse>
+        
+        <db-collapse 
+          id="independent-2" 
+          title="Section 2: Technical Details" 
+          aria-label="Technical details section"
+          group="independent-2">
+          <p>
+            The components are built using TypeScript and Lit Element, a lightweight web component 
+            library. They use Shadow DOM for encapsulation and custom events for communication between 
+            components.
+          </p>
+        </db-collapse>
+      </section>
+      
+      <section class="demo-section" aria-labelledby="controls-heading">
+        <h2 id="controls-heading">Programmatic Control</h2>
+        <p>You can also control the collapses programmatically:</p>
+        
+        <div class="demo-controls">
+          <button class="demo-btn" id="open-all-faq">Open All FAQ</button>
+          <button class="demo-btn" id="close-all-faq">Close All FAQ</button>
+          <button class="demo-btn" id="toggle-first-faq">Toggle First FAQ</button>
+        </div>
+        
+        <div class="status-log" id="event-log">
+          <div class="log-entry">Event log will appear here...</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const eventLog = document.getElementById('event-log');
+      
+      // Add log entry function
+      function logEvent(message) {
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+        eventLog.appendChild(entry);
+        eventLog.scrollTop = eventLog.scrollHeight;
+        
+        // Keep only the last 10 entries
+        while (eventLog.children.length > 10) {
+          eventLog.removeChild(eventLog.firstChild);
+        }
+      }
+      
+      // Clear initial message
+      eventLog.innerHTML = '';
+      
+      // Listen for collapse-toggle events
+      document.addEventListener('collapse-toggle', (event) => {
+        const detail = event.detail;
+        logEvent(`Collapse ${detail.id} ${detail.expanded ? 'opened' : 'closed'} (group: ${detail.group})`);
+      });
+      
+      // Programmatic control buttons
+      document.getElementById('open-all-faq').addEventListener('click', () => {
+        document.querySelectorAll('db-collapse[group="faq"]').forEach(collapse => {
+          collapse.expanded = true;
+        });
+        logEvent('Attempted to open all FAQ collapses (note: accordion behavior will still apply)');
+      });
+      
+      document.getElementById('close-all-faq').addEventListener('click', () => {
+        document.querySelectorAll('db-collapse[group="faq"]').forEach(collapse => {
+          collapse.expanded = false;
+        });
+        logEvent('Closed all FAQ collapses');
+      });
+      
+      document.getElementById('toggle-first-faq').addEventListener('click', () => {
+        const firstCollapse = document.getElementById('collapse-1');
+        if (firstCollapse) {
+          const newState = !firstCollapse.expanded;
+          firstCollapse.expanded = newState;
+          logEvent(`Programmatically ${newState ? 'opened' : 'closed'} first FAQ collapse`);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

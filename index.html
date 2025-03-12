@@ -32,9 +32,59 @@
   </main>
 
   <script>
-    // Fetch the mapping data from the JSON file
     document.addEventListener('DOMContentLoaded', () => {
       const visualizer = document.getElementById('mapping-visualizer');
+      
+      // Helper function to update the UI with mapping data
+      function updateMappingOutput(mapping, isValidated = false) {
+        // Log the mapping to the console
+        console.log(`Received ${isValidated ? 'validated' : 'changed'} mapping:`, mapping);
+        
+        // Create a formatted JSON string for display
+        const formattedJson = JSON.stringify(mapping, null, 2);
+        
+        // Create or update the output element
+        const outputElement = document.createElement('pre');
+        outputElement.setAttribute('aria-live', 'polite');
+        outputElement.setAttribute('role', 'status');
+        outputElement.textContent = formattedJson;
+        outputElement.style.backgroundColor = '#f5f5f5';
+        outputElement.style.padding = '15px';
+        outputElement.style.border = '1px solid #ddd';
+        outputElement.style.borderRadius = '4px';
+        outputElement.style.marginTop = '20px';
+        outputElement.style.overflow = 'auto';
+        outputElement.style.maxHeight = '300px';
+        
+        // Add a heading for the output
+        const heading = document.createElement('h3');
+        heading.textContent = isValidated ? 'Validated Mapping Output:' : 'Current Mapping:';
+        heading.id = 'mapping-output-heading';
+        outputElement.setAttribute('aria-labelledby', 'mapping-output-heading');
+        
+        // Clear any previous output and add the new one
+        const outputContainer = document.getElementById('mapping-output') || document.createElement('div');
+        if (!document.getElementById('mapping-output')) {
+          outputContainer.id = 'mapping-output';
+          document.getElementById('mapping-visualization').appendChild(outputContainer);
+        }
+        outputContainer.innerHTML = '';
+        outputContainer.appendChild(heading);
+        outputContainer.appendChild(outputElement);
+      }
+      
+      // Add event listeners for both mapping-change and validate-mapping events
+      if (visualizer) {
+        // Listen for real-time changes to the mapping
+        visualizer.addEventListener('mapping-change', (event) => {
+          updateMappingOutput(event.detail.mapping, false);
+        });
+        
+        // Listen for validation events
+        visualizer.addEventListener('validate-mapping', (event) => {
+          updateMappingOutput(event.detail.mapping, true);
+        });
+      }
       
       // Fetch the mapping data from the JSON file
       fetch('./src/data/mapping.json')

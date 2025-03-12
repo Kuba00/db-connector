@@ -91,7 +91,7 @@ export class DbMappingVisualizer extends LitElement {
    */
   private getAllTargetFields(): string[] {
     const targetFields = new Set<string>();
-    
+
     // Extract all target fields from all tables
     this.mappingData.tables.forEach(table => {
       table.header_mapping.forEach(mapping => {
@@ -100,7 +100,7 @@ export class DbMappingVisualizer extends LitElement {
         }
       });
     });
-    
+
     return Array.from(targetFields);
   }
 
@@ -108,30 +108,30 @@ export class DbMappingVisualizer extends LitElement {
    * Generate options for the target field select
    * Ensures no duplicate options are included and sorts them alphabetically
    */
-  private generateTargetFieldOptions(currentValue: string): {value: string, label: string}[] {
+  private generateTargetFieldOptions(currentValue: string): { value: string, label: string }[] {
     // Get all unique target fields
     const allTargetFields = this.getAllTargetFields();
-    
+
     // Create options array with the current value first
     const options = [
       { value: currentValue, label: currentValue }
     ];
-    
+
     // Get all other fields (excluding current value) and sort them alphabetically
     const otherFields = allTargetFields
       .filter(field => field !== currentValue)
       .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-    
+
     // Add the sorted fields to the options
     otherFields.forEach(field => {
       options.push({ value: field, label: field });
     });
-    
+
     // Ensure no duplicates by using a Set and reconstructing the array
     const uniqueOptions = Array.from(
       new Map(options.map(item => [item.value, item])).values()
     );
-    
+
     return uniqueOptions;
   }
 
@@ -141,8 +141,26 @@ export class DbMappingVisualizer extends LitElement {
   private handleTargetChange(event: Event, tableIndex: number, sourceField: string) {
     const select = event.target as HTMLElement;
     const value = (select as any).value;
-    
+
     console.log(`Target field for ${sourceField} changed to ${value}`);
+    
+    // Update the mapping data with the new target field
+    if (this.mappingData && this.mappingData.tables && this.mappingData.tables[tableIndex]) {
+      const table = this.mappingData.tables[tableIndex];
+      const mappingIndex = table.header_mapping.findIndex(m => m.source_field === sourceField);
+      
+      if (mappingIndex !== -1) {
+        // Update the target field in the mapping data
+        table.header_mapping[mappingIndex].target_field = value;
+        
+        // Force a re-render to reflect the changes
+        this.requestUpdate();
+        
+        // Generate and emit the simplified mapping data on each change
+        this.emitSimplifiedMapping();
+      }
+    }
+    
     this.dispatchEvent(new CustomEvent('target-change', {
       detail: { tableIndex, sourceField, targetField: value },
       bubbles: true,
@@ -172,6 +190,59 @@ export class DbMappingVisualizer extends LitElement {
       bubbles: true,
       composed: true
     }));
+  }
+
+  /**
+   * Generate and emit the simplified mapping data
+   * This can be called whenever the mapping data changes
+   */
+  private emitSimplifiedMapping() {
+    // Create simplified mapping data with just table name and header mappings
+    const simplifiedMapping = {
+      tables: this.mappingData.tables.map(table => ({
+        table_name: table.table_name,
+        header_mapping: table.header_mapping.map(mapping => ({
+          source_field: mapping.source_field,
+          target_field: mapping.target_field
+        }))
+      }))
+    };
+
+    // Dispatch event with the simplified mapping data
+    this.dispatchEvent(new CustomEvent('mapping-change', {
+      detail: { mapping: simplifiedMapping },
+      bubbles: false,
+      composed: true
+    }));
+
+    return simplifiedMapping;
+  }
+
+  /**
+   * Handle validate mapping button click
+   * Generates a simplified JSON with just table name and header mappings (source and target)
+   * @param event The click event (optional)
+   */
+  private handleValidateMapping(event?: Event) {
+    // Prevent event bubbling if an event is provided
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Generate the simplified mapping using the shared method
+    const simplifiedMapping = this.emitSimplifiedMapping();
+
+    console.log('Validated mapping:', simplifiedMapping);
+    
+    // Dispatch the validate-mapping event (in addition to the mapping-change event)
+    this.dispatchEvent(new CustomEvent('validate-mapping', {
+      detail: { mapping: simplifiedMapping },
+      bubbles: false,
+      composed: true
+    }));
+
+    return simplifiedMapping;
   }
 
   render() {
@@ -276,9 +347,24 @@ export class DbMappingVisualizer extends LitElement {
                   </ul>
                 </div>
               ` : ''}
+              
+
             </div>
           </db-collapse>
         `)}
+        
+        <!-- Validate Mapping Button -->
+        <div class="validate-mapping-container" style="margin-top: 30px; text-align: center;">
+          <db-button 
+            variant="primary"
+            icon="bx bx-check-circle"
+            @click="${(e: Event) => this.handleValidateMapping(e)}"
+            aria-label="Validate all mappings"
+            style="padding: 12px 24px; font-size: 16px;"
+          >
+            Validate All Mappings
+          </db-button>
+        </div>
       </div>
     `;
   }

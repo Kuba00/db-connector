@@ -165,6 +165,12 @@ export class DbMappingUploader extends LitElement {
   apiUrl = 'http://localhost:3100/api/mapping';
 
   /**
+   * The schema data from the schema editor
+   */
+  @property({ type: Object })
+  schemaData = null;
+
+  /**
    * The mapping data to visualize
    */
   @property({ type: Object })
@@ -412,16 +418,67 @@ export class DbMappingUploader extends LitElement {
   private errorMessage = '';
 
   /**
+   * Validates if all required data is available before making an API call
+   * @returns An object with validation result and error message if any
+   */
+  private validateApiRequirements(): { isValid: boolean; errorMessage?: string } {
+    // Check if schema data is available
+    if (!this.schemaData) {
+      return { 
+        isValid: false, 
+        errorMessage: 'Database schema is required. Please define a schema in the Database Schema Editor.' 
+      };
+    }
+
+    // Check if file has been uploaded
+    if (!this.currentFile || !this.fileLoaded) {
+      return { 
+        isValid: false, 
+        errorMessage: 'A mapping file is required. Please upload a file first.' 
+      };
+    }
+
+    return { isValid: true };
+  }
+
+  /**
    * Fetches mapping data from the API
    */
   private fetchMappingFromApi() {
+    // Validate requirements before making API call
+    const validation = this.validateApiRequirements();
+    if (!validation.isValid) {
+      this.errorMessage = validation.errorMessage || 'Missing required data for API call';
+      this.logEvent('error', this.errorMessage, 'error');
+      return;
+    }
+
     this.logEvent('api-request', `Fetching mapping data from ${this.apiUrl}`);
 
     // Set loading state
     this.isLoading = true;
     this.errorMessage = '';
 
-    fetch(this.apiUrl)
+    // Prepare headers for JSON content
+    const headers = new Headers({
+      'Content-Type': 'application/json'
+    });
+
+    // Prepare request body with both schema data and mapping file information
+    const requestBody = {
+      schemaData: this.schemaData,
+      mappingFile: this.currentFile ? {
+        name: this.currentFile.name,
+        size: this.currentFile.size,
+        type: this.currentFile.type
+      } : null
+    };
+
+    fetch(this.apiUrl, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(requestBody)
+    })
       .then(response => {
         if (!response.ok) {
           throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);

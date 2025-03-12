@@ -74,6 +74,7 @@ export class DbConnector extends LitElement {
             <section class="connector-section">
                 <db-mapping-uploader
                   .apiUrl=${this.apiUrl}
+                  .schemaData=${this.schemaData}
                 ></db-mapping-uploader>
             </section>
         </div>
